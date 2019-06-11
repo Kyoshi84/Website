@@ -36,10 +36,7 @@ class Contact(models.Model):
 
 """Do poprawy - to ma byc tylko id i link/text a nie kolejne pola """
 class Footer(models.Model):
-    author = models.CharField(max_length=50)
-    cookies = models.CharField(max_length=50)
-    privacy = models.CharField(max_length=50)
-    about = models.CharField(max_length=50)
+    text = models.CharField(max_length=50)
     link = models.CharField(max_length=50)
     def __str__(self):
         return self.name
