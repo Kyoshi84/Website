@@ -13,15 +13,15 @@ class Article(models.Model):
     created_on = models.DateField(auto_now=True)
     text = models.TextField()
     title = models.CharField(max_length=275)
-    picture = models.ImageField(upload_to = 'pic_folder/', default = 'pic_folder/None/no-img.jpg')
+    picture = models.ImageField(upload_to = "pic_articles/", default = 'pic_folder/None/no-img.jpg')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     def __str__(self):
-        return self.name
+        return self.title
 
 
 class Slider(models.Model):
-    photo = models.ImageField(upload_to = 'photo_folder/', default = 'photo_folder/None/no-img.jpg')
+    photo = models.ImageField(upload_to = "pic_slider/", default = 'pic_slider/None/no-img.jpg')
     name = models.CharField(max_length=50, default = 'id')
     def __str__(self):
         return self.name
