@@ -180,3 +180,63 @@
   -webkit-animation-name: slideInRight;
   animation-name: slideInRight;
 }
+
+/* SCC for articles */
+article img{margin:0 1.5em 1.5em 0;box-shadow:0 0 8px 4px black;border:.5em groove #fff;}
+body{ margin:3% auto; background:#ddd; text-shadow:0 .8px #111;}
+article {border:.5em outset #aac !important; border-radius:1em !important; box-shadow:0 0 23px #000 !important;}
+header span.glyphicon{color:#DDD; text-shadow:2px 2px #111 !important;filter:blur(2px);-webkit-filter: blur(2px);
+-moz-filter: blur(2px);
+-o-filter: blur(2px);
+-ms-filter: blur(2px);} /*Note that the blur() Effect is not supported as css3 in FFGecko and IEX*/
+
+
+/* SCC for Navigation */
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+@media (min-width: 992px){
+
+.sidenav .navbar-nav {
+    -ms-flex-direction: row;
+    flex-direction: column;
+    width: 100%;
+    margin-left: 65px;
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: uppercase;
+}}
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
