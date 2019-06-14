@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from PIL import Image
+from django.db import models
+from tinymce.models import HTMLField
 
 # Create your models here.
 class Category(models.Model):
@@ -11,7 +13,7 @@ class Category(models.Model):
 class Article(models.Model):
     """Article is a main content in CMS"""
     created_on = models.DateField(auto_now=True)
-    text = models.TextField()
+    text = HTMLField()
     title = models.CharField(max_length=275)
     picture = models.ImageField(upload_to = "pic_articles/", default = 'pic_folder/None/no-img.jpg')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
