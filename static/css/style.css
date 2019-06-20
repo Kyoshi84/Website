@@ -1,6 +1,6 @@
 #myCarousel .carousel-item .mask {
     position: absolute;
-    top: 0;
+    top:0;
 	left:0;
 	height:100%;
     width: 100%;
@@ -16,7 +16,7 @@
 }
 #myCarousel p{
 	font-size:18px;
-	margin-bottom:15px;
+	margin-bottom:20px;
 	color:#d5d5d5;
 }
 #myCarousel .carousel-item a{background:#F47735; font-size:14px; color:#FFF; padding:13px 32px; display:inline-block; }

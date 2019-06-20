@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from PIL import Image
 from django.db import models
 from tinymce.models import HTMLField
+from django.utils.translation import gettext_lazy as URLField
 
 # Create your models here.
 class Category(models.Model):
@@ -25,6 +26,8 @@ class Article(models.Model):
 class Slider(models.Model):
     photo = models.ImageField(upload_to = "pic_slider/", default = 'pic_slider/None/no-img.jpg')
     name = models.CharField(max_length=50, default = 'id')
+    lead = models.TextField(max_length=245, default = 'descritpion')
+    link = models.URLField(max_length=20000, default='')
     def __str__(self):
         return self.name
 
@@ -39,6 +42,6 @@ class Contact(models.Model):
 """Do poprawy - to ma byc tylko id i link/text a nie kolejne pola """
 class Footer(models.Model):
     text = models.CharField(max_length=50)
-    link = models.CharField(max_length=50)
+    link = models.URLField(max_length=20000, default='')
     def __str__(self):
         return self.name
