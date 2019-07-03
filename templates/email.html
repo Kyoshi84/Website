@@ -1,0 +1,32 @@
+{% extends "main.html" %}
+
+{% block email %}
+
+
+
+
+
+
+<div class="container">
+
+    <div class="row">
+        <div class="col-md-4 offset-md-4">
+        <div class="card text-center card  bg-default mb-3">
+          <div class="card-header">
+            <h1>Contact Us</h1>
+          </div>
+          <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="form-actions">
+                  <button type="submit" class="btn btn-secondary">Send</button>
+                </div>
+            </form>
+          </div>
+
+        </div>
+    </div>
+    </div>
+</div>
+{% endblock %}

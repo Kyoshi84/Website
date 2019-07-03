@@ -7,14 +7,16 @@ from django.utils.translation import gettext_lazy as URLField
 
 # Create your models here.
 class Category(models.Model):
+    """Category is connected with menu. Each category is a new menu """
     name = models.CharField(max_length=25)
+    description = HTMLField(max_length=500, blank='True')
     def __str__(self):
         return self.name
 
 class Article(models.Model):
     """Article is a main content in CMS"""
     created_on = models.DateField(auto_now=True)
-    text = HTMLField()
+    text = HTMLField(max_length=5000, blank='True')
     title = models.CharField(max_length=275)
     picture = models.ImageField(upload_to = "pic_articles/", default = 'pic_folder/None/no-img.jpg')
     author = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -26,8 +28,7 @@ class Article(models.Model):
 class Slider(models.Model):
     photo = models.ImageField(upload_to = "pic_slider/", default = 'pic_slider/None/no-img.jpg')
     name = models.CharField(max_length=50, default = 'id')
-    lead = models.TextField(max_length=245, default = 'descritpion')
-    link = models.URLField(max_length=20000, default='')
+    link = models.URLField(max_length=250, blank='True')
     def __str__(self):
         return self.name
 
