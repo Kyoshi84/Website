@@ -201,3 +201,11 @@ table.reg td.year{font-family:'IBM Plex Mono',monospace;color:var(--amber);text-
 .method{margin-top:26px;max-width:72ch;font-size:0.88rem;color:var(--text-lo);border-left:3px solid var(--amber);padding:4px 0 4px 14px;}
 .method .mono{font-family:'IBM Plex Mono',monospace;font-size:0.78rem;color:var(--text-hi);margin-right:4px;}
 @media (max-width:820px){ .streams{grid-template-columns:1fr;} }
+
+/* ---------- Buy Me a Coffee ---------- */
+.coffee{display:inline-flex;align-items:center;justify-content:center;flex:none;width:46px;height:46px;border-radius:7px;background:#ffdd00;color:#14161c;text-decoration:none;transition:transform .2s,box-shadow .2s;}
+.coffee:hover{transform:translateY(-2px);box-shadow:0 4px 14px rgba(255,221,0,0.35);}
+.coffee svg{width:24px;height:24px;}
+.coffee.sm{width:24px;height:24px;border-radius:5px;vertical-align:middle;margin-left:6px;}
+.coffee.sm svg{width:15px;height:15px;}
+.site-foot .coffee{color:#14161c;}

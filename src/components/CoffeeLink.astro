@@ -1,0 +1,20 @@
+---
+interface Props { size?: 'md' | 'sm' }
+const { size = 'md' } = Astro.props;
+---
+<a
+  class:list={['coffee', size]}
+  href="https://buymeacoffee.com/unclekyoshi"
+  target="_blank"
+  rel="noopener"
+  title="Postaw mi kawę (Buy Me a Coffee)"
+  aria-label="Postaw mi kawę na Buy Me a Coffee"
+>
+  <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3.5c0 .8.6 1.2.6 2s-.6 1.2-.6 2" />
+    <path d="M10.5 3.5c0 .8.6 1.2.6 2s-.6 1.2-.6 2" />
+    <path d="M14 3.5c0 .8.6 1.2.6 2s-.6 1.2-.6 2" />
+    <path d="M4.5 10h13v5a5 5 0 0 1-5 5h-3a5 5 0 0 1-5-5v-5z" />
+    <path d="M17.5 11.5h1.2a2.3 2.3 0 0 1 0 4.6h-1.6" />
+  </svg>
+</a>

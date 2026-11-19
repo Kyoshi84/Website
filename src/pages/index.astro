@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import PostList from '../components/PostList.astro';
+import CoffeeLink from '../components/CoffeeLink.astro';
 import { getPublishedPosts } from '../lib/posts';
 
 const latest = (await getPublishedPosts()).slice(0, 3);
@@ -22,6 +23,7 @@ const latest = (await getPublishedPosts()).slice(0, 3);
           <a class="cta ghost" href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a>
           <a class="cta ghost" href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a>
           <a class="cta ghost" href="/certyfikaty/">Zobacz certyfikaty</a>
+          <CoffeeLink />
         </div>
       </div>
       <div class="photo-wrap">
@@ -165,6 +167,7 @@ const latest = (await getPublishedPosts()).slice(0, 3);
       <div class="contact-grid">
         <a class="cta ghost" href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a>
         <a class="cta ghost" href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a>
+        <CoffeeLink />
       </div>
       <div class="foot-bottom">
         <span>Jan Dionizy Mejor — Analityk Biznesowy · Warszawa</span>

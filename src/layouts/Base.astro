@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import CoffeeLink from '../components/CoffeeLink.astro';
 
 interface Props {
   title?: string;
@@ -59,7 +60,7 @@ const nav = [
   <div class="site-foot">
     <div class="wrap">
       <span>© {new Date().getFullYear()} Jan Dionizy Mejor</span>
-      <span><a href="/rss.xml">RSS</a> · <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a></span>
+      <span><a href="/rss.xml">RSS</a> · <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a> <CoffeeLink size="sm" /></span>
     </div>
   </div>
 </body>
