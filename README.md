@@ -23,7 +23,7 @@ Plik `src/content/blog/RRRR-MM-DD-tytul.md`:
 title: "Tytuł"
 description: "Lead, 1–2 zdania."
 date: 2026-11-24
-category: raport-ai   # albo: artykul
+category: raport-ai   # albo: raport-gaming, artykul
 tags: [ai, bielik]
 draft: false          # true = wpis nie pojawi się na stronie
 linkedin: "Krótki post do wklejenia na LinkedIn."
@@ -32,7 +32,7 @@ linkedin: "Krótki post do wklejenia na LinkedIn."
 Treść w Markdown…
 ```
 
-Szablon raportu: `src/content/blog/_szablon-raportu-ai.md`.
+Szablony raportów: `src/content/blog/_szablon-raportu-ai.md` i `_szablon-raportu-gaming.md`.
 
 ## Pisanie w przeglądarce (Pages CMS)
 

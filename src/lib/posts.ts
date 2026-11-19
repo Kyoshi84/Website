@@ -4,6 +4,7 @@ export type Post = CollectionEntry<'blog'>;
 
 export const CATEGORY_LABEL: Record<Post['data']['category'], string> = {
   'raport-ai': 'Raport AI',
+  'raport-gaming': 'Raport Gaming',
   artykul: 'Artykuł',
 };
 

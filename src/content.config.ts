@@ -7,8 +7,8 @@ const blog = defineCollection({
     title: z.string(),
     description: z.string(),
     date: z.coerce.date(),
-    // "raport-ai" = cykliczny raport z rynku AI, "artykul" = Twój własny wpis
-    category: z.enum(['raport-ai', 'artykul']).default('artykul'),
+    // "raport-ai" / "raport-gaming" = cykliczne raporty, "artykul" = Twój własny wpis
+    category: z.enum(['raport-ai', 'raport-gaming', 'artykul']).default('artykul'),
     tags: z.array(z.string()).default([]),
     // draft: true = wpis jest w repozytorium, ale nie pojawia się na stronie
     draft: z.boolean().default(false),

@@ -38,6 +38,8 @@ content:
               label: Artykuł
             - value: raport-ai
               label: Raport AI
+            - value: raport-gaming
+              label: Raport Gaming
       - name: tags
         label: Tagi
         type: string

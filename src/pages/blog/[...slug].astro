@@ -17,7 +17,7 @@ const { Content } = await render(post);
       <div class="wrap">
         <a class="back" href="/blog/">← Wszystkie wpisy</a>
         <div class="post-meta" style="margin-top:22px">
-          <span class:list={['badge', { alt: post.data.category === 'artykul' }]}>{CATEGORY_LABEL[post.data.category]}</span>
+          <span class:list={['badge', { alt: post.data.category === 'artykul', gaming: post.data.category === 'raport-gaming' }]}>{CATEGORY_LABEL[post.data.category]}</span>
           <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
         </div>
         <h1>{post.data.title}</h1>

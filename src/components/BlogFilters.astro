@@ -1,0 +1,16 @@
+---
+interface Props { current: 'all' | 'raport-ai' | 'raport-gaming' | 'artykul' }
+const { current } = Astro.props;
+
+const items = [
+  { key: 'all', href: '/blog/', label: 'Wszystko' },
+  { key: 'raport-ai', href: '/blog/raporty-ai/', label: 'Raporty AI' },
+  { key: 'raport-gaming', href: '/blog/raporty-gaming/', label: 'Raporty Gaming' },
+  { key: 'artykul', href: '/blog/artykuly/', label: 'Artykuły' },
+];
+---
+<nav class="filters" aria-label="Kategorie">
+  {items.map((i) => (
+    <a href={i.href} aria-current={current === i.key ? 'page' : undefined}>{i.label}</a>
+  ))}
+</nav>

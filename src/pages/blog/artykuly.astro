@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
+import BlogFilters from '../../components/BlogFilters.astro';
 import { getPublishedPosts } from '../../lib/posts';
 
 const posts = (await getPublishedPosts()).filter((p) => p.data.category === 'artykul');
@@ -10,11 +11,7 @@ const posts = (await getPublishedPosts()).filter((p) => p.data.category === 'art
     <div class="wrap">
       <h1>Artykuły</h1>
       <p>Teksty o analizie wymagań, procesach biznesowych i wdrożeniach IT.</p>
-      <nav class="filters" aria-label="Kategorie">
-        <a href="/blog/">Wszystko</a>
-        <a href="/blog/raporty-ai/">Raporty AI</a>
-        <a href="/blog/artykuly/" aria-current="page">Artykuły</a>
-      </nav>
+      <BlogFilters current="artykul" />
     </div>
   </section>
   <section>

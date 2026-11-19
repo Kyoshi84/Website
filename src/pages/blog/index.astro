@@ -1,20 +1,42 @@
 ---
 import Base from '../../layouts/Base.astro';
 import PostList from '../../components/PostList.astro';
+import BlogFilters from '../../components/BlogFilters.astro';
 import { getPublishedPosts } from '../../lib/posts';
 
 const posts = await getPublishedPosts();
 ---
-<Base title="Blog" active="blog" description="Raporty z rynku AI i nowych technologii oraz artykuły o analizie biznesowej.">
+<Base title="Blog" active="blog" description="Mój radar rynku: cykliczne raporty z rynku AI i rynku gier (iGaming, zakłady, loterie) oraz notatki z warsztatu analityka.">
   <section class="page-hero">
     <div class="wrap">
-      <h1>Blog</h1>
-      <p>Cykliczne raporty z rynku AI i nowych technologii (ze szczególnym uwzględnieniem Polski i Bielika) oraz moje teksty o analizie biznesowej.</p>
-      <nav class="filters" aria-label="Kategorie">
-        <a href="/blog/" aria-current="page">Wszystko</a>
-        <a href="/blog/raporty-ai/">Raporty AI</a>
-        <a href="/blog/artykuly/">Artykuły</a>
-      </nav>
+      <span class="kicker">Blog · radar rynku</span>
+      <h1>Za dużo się dzieje, żeby śledzić to w kartach przeglądarki.</h1>
+      <div class="intro">
+        <p>Ten blog powstał z prostego powodu: przestałem nadążać. Co tydzień nowy model AI, w drodze kolejna regulacja, gdzieś w Europie rusza przetarg loteryjny, a o konferencji dowiaduję się dzień po zamknięciu rejestracji. Zamiast dwudziestu otwartych kart i newsletterów, których nigdy nie czytam, zbudowałem sobie radar. Dwa razy w tygodniu przegląda sieć i oddaje mi jedno uporządkowane zestawienie, z linkiem do każdego źródła.</p>
+        <p><strong>Piszę to przede wszystkim dla siebie.</strong> To mój notatnik i zewnętrzna pamięć. Jeśli jednak śledzisz te same tematy, częstuj się. Może oszczędzę Ci kilka godzin przewijania.</p>
+      </div>
+
+      <div class="streams">
+        <a class="stream" href="/blog/raporty-ai/">
+          <span class="badge">Raport AI</span>
+          <h2>Sztuczna inteligencja</h2>
+          <p>Modele, które właśnie wyszły, i te, o których się mówi. Polski rynek z Bielikiem na honorowym miejscu, AI Act w praktyce, pieniądze w startupach i kalendarz konferencji, żeby nie przegapić rejestracji.</p>
+        </a>
+        <a class="stream" href="/blog/raporty-gaming/">
+          <span class="badge gaming">Raport Gaming</span>
+          <h2>Rynek gier i loterii</h2>
+          <p>iGaming, zakłady sportowe i loterie państwowe w Polsce i na świecie: regulacje, przetargi, technologie, dostawcy systemów loteryjnych i nowości z targów branżowych.</p>
+        </a>
+        <a class="stream" href="/blog/artykuly/">
+          <span class="badge alt">Artykuł</span>
+          <h2>Z warsztatu analityka</h2>
+          <p>Wymagania, procesy, testy akceptacyjne i to, jak AI naprawdę zmienia codzienną pracę w organizacji. Pisane wtedy, kiedy jest coś do powiedzenia.</p>
+        </a>
+      </div>
+
+      <p class="method"><span class="mono">Jak to powstaje:</span> wyszukiwanie i pierwsze streszczenia przygotowuje asystent AI, a ja wybieram, sprawdzam i dopisuję komentarz. Każda informacja ma link do źródła. Gdyby coś się nie zgadzało, rację ma źródło. Treści na blogu to moje prywatne notatki i opinie, a nie stanowisko mojego pracodawcy.</p>
+
+      <BlogFilters current="all" />
     </div>
   </section>
   <section>
