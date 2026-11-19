@@ -1,0 +1,24 @@
+---
+import { CATEGORY_LABEL, formatDate, type Post } from '../lib/posts';
+
+interface Props { posts: Post[] }
+const { posts } = Astro.props;
+---
+{posts.length === 0 ? (
+  <p class="empty">Na razie nie ma tu wpisów.</p>
+) : (
+  <ul class="post-list">
+    {posts.map((post) => (
+      <li class="post-item">
+        <a href={`/blog/${post.id}/`}>
+          <div class="post-meta">
+            <span class:list={['badge', { alt: post.data.category === 'artykul' }]}>{CATEGORY_LABEL[post.data.category]}</span>
+            <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+          </div>
+          <h2>{post.data.title}</h2>
+          <p>{post.data.description}</p>
+        </a>
+      </li>
+    ))}
+  </ul>
+)}

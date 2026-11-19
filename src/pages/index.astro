@@ -1,0 +1,175 @@
+---
+import Base from '../layouts/Base.astro';
+import PostList from '../components/PostList.astro';
+import { getPublishedPosts } from '../lib/posts';
+
+const latest = (await getPublishedPosts()).slice(0, 3);
+---
+<Base active="home">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <div class="kicker">ANALITYK BIZNESOWY · WARSZAWA</div>
+        <h1>Zamieniam złożone procesy biznesowe w rozwiązania, które działają.</h1>
+        <p class="lede">Ponad sześć lat doświadczenia w analizie wymagań, optymalizacji procesów i wdrożeniach IT dla organizacji o wysokiej złożoności regulacyjnej. Łączę perspektywę biznesu z dokumentacją techniczną, prowadzę testy akceptacyjne i wspieram transformację cyfrową.</p>
+        <div class="facts">
+          <div><div class="num">6+</div><div class="lbl">LAT W ANALIZIE BIZNESOWEJ</div></div>
+          <div><div class="num">15+</div><div class="lbl">CERTYFIKATÓW I SZKOLEŃ</div></div>
+          <div><div class="num">3</div><div class="lbl">JĘZYKI ROBOCZE</div></div>
+        </div>
+        <div class="cta-row">
+          <a class="cta primary" href="mailto:janmejor84@gmail.com">Napisz do mnie</a>
+          <a class="cta ghost" href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a>
+          <a class="cta ghost" href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a>
+          <a class="cta ghost" href="/certyfikaty/">Zobacz certyfikaty</a>
+        </div>
+      </div>
+      <div class="photo-wrap">
+        <div class="photo-frame">
+          <img src="/photo.jpg" alt="Jan Mejor">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="wrap">
+      <div class="sec-head"><span class="tag">§ 01</span><h2>O mnie</h2></div>
+      <p>Specjalizuję się w analizie wymagań biznesowych i funkcjonalnych oraz optymalizacji procesów w środowiskach o wysokiej złożoności technologicznej i regulacyjnej. Od 2019 roku pracuję w zespole ds. architektury i analizy IT w Totalizatorze Sportowym, gdzie odpowiadam za analizy dla systemów o krytycznym znaczeniu dla firmy — od elektronicznego helpdesku i zarządzania przez cele, po płatności w kasynie online i na urządzeniach LVM.</p>
+      <p>Przygotowuję dokumentację wymagań, prowadzę testy akceptacyjne (UAT) i opiniuję rozwiązania dostarczane przez zewnętrznych dostawców — łącząc perspektywę biznesu, IT i użytkownika końcowego. Współpracuję z zespołami wdrożeniowymi na każdym etapie: od zebrania wymagań, przez dokumentację funkcjonalną i notacje BPMN/UML, po testy i wsparcie po wdrożeniu. Wcześniej, jako Project Manager i Product Owner w Bibliotece Narodowej, prowadziłem duże projekty cyfrowe w metodyce PRINCE2 — w tym zadanie w projekcie „e-usługa OMNIS" wraz z pełną dokumentacją przetargową (SIWZ) oraz relaunch serwisu Polona.pl, którego premiera w 2016 roku odbyła się z udziałem Ministra Kultury.</p>
+      <p>Posiadam certyfikaty PRINCE2, IREB i ITIL oraz doświadczenie w pracy z międzynarodowymi partnerami technologicznymi (Europeana, TEL). Aktywnie uczestniczę w programie Cyfrowych Liderów, poszukując i wdrażając nowe technologie — w tym bezpieczne zastosowania sztucznej inteligencji w procesach biznesowych, co potwierdza certyfikat AIDEAS Level UP w klasie Ethical AI Hacker.</p>
+      <ul class="highlights">
+        <li>Współautor dokumentacji wymagań i testów dla kluczowych systemów Totalizatora Sportowego, w tym płatności online i systemów kasynowych.</li>
+        <li>Prowadzenie zadania „e-usługa OMNIS" w metodyce PRINCE2 — od dokumentacji przetargowej po odbiór rozwiązania.</li>
+        <li>Współodpowiedzialność za relaunch Polona.pl (2016) — od koncepcji UX po premierę z udziałem Ministra Kultury.</li>
+        <li>Autor publikacji zawodowych, m.in. <em>Przepływ danych w placówce informacyjnej Call Center</em>.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="experience">
+    <div class="wrap">
+      <div class="sec-head"><span class="tag">§ 02</span><h2>Doświadczenie</h2></div>
+
+      <div class="record">
+        <div class="record-top"><span class="role">Analityk Biznesowo-Systemowy</span><span class="id mono">2019 — obecnie</span></div>
+        <div class="record-meta">Totalizator Sportowy Sp. z o.o. · Warszawa</div>
+        <ul>
+          <li>Analiza wymagań biznesowych i funkcjonalnych dla systemów: elektroniczny helpdesk, zarządzanie przez cele, płatności w kasynie online i urządzeniach LVM.</li>
+          <li>Opiniowanie analiz funkcjonalnych i systemowych podwykonawców, prowadzenie testów wdrażanych rozwiązań.</li>
+          <li>Wdrożenia aplikacji wewnętrznych opartych na Power Platform; udział w programie Cyfrowych Liderów.</li>
+        </ul>
+      </div>
+
+      <div class="record">
+        <div class="record-top"><span class="role">Documentation Specialist</span><span class="id mono">2018 — 2019</span></div>
+        <div class="record-meta">Wojskowe Zakłady Łączności Nr 1 S.A. · Zegrze Południowe</div>
+        <ul>
+          <li>Dokumentacja techniczna oprogramowania i sprzętu; standaryzacja nazewnictwa i procesu dokumentacyjnego.</li>
+          <li>Materiały szkoleniowe i marketingowe dostosowane do potrzeb odbiorców.</li>
+        </ul>
+      </div>
+
+      <div class="record">
+        <div class="record-top"><span class="role">IT Project Manager</span><span class="id mono">2015 — 2018</span></div>
+        <div class="record-meta">Biblioteka Narodowa · Warszawa</div>
+        <ul>
+          <li>Dokumentacja projektowa i rola Product Ownera dla projektów Merkuriusz, Polona, Biblios 2.0, Długosz.</li>
+          <li>Prowadzenie zadania w metodyce PRINCE2 w ramach projektu „e-usługa OMNIS", wraz z dokumentacją przetargową.</li>
+          <li>Stały kontakt z partnerami międzynarodowymi (Europeana, TEL) i reprezentacja instytucji na konferencjach.</li>
+        </ul>
+      </div>
+
+      <div class="record">
+        <div class="record-top"><span class="role">Kierownik Zespołu ds. Rozwoju CBN Polona</span><span class="id mono">2012 — 2013</span></div>
+        <div class="record-meta">Biblioteka Narodowa · Warszawa</div>
+        <ul>
+          <li>Zarządzanie projektem nowej Cyfrowej Biblioteki Polona; mockupy wizualne i rozwiązania UX dla premiery serwisu w 2016.</li>
+          <li>Projektowanie procesów biznesowych i testów użytkowników.</li>
+        </ul>
+      </div>
+
+      <div class="record">
+        <div class="record-top"><span class="role">Bibliotekarz Cyfrowy</span><span class="id mono">2010 — 2012</span></div>
+        <div class="record-meta">Biblioteka Narodowa · Warszawa</div>
+        <ul>
+          <li>Redakcja zasobów Polona.pl (DLibra); testy manualne i plany testów dla projektów Academica i EAZPP.</li>
+          <li>Założenia platformy e-learningowej Biblioteki Narodowej.</li>
+        </ul>
+      </div>
+
+      <div class="record">
+        <div class="record-top"><span class="role">Consultant Antichurn/Desabo</span><span class="id mono">2008 — 2009</span></div>
+        <div class="record-meta">Cyfra+</div>
+        <ul>
+          <li>Obsługa reklamacji i rezygnacji klientów, praca z trudnym klientem.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="skills">
+    <div class="wrap">
+      <div class="sec-head"><span class="tag">§ 03</span><h2>Kompetencje</h2></div>
+      <div class="skill-groups">
+        <div class="skill-group">
+          <h3>Analiza i procesy</h3>
+          <div class="tag-row"><span>Ponowna inżynieria procesów</span><span>Wymagania biznesowe</span><span>UAT</span><span>BPMN</span><span>UML</span></div>
+        </div>
+        <div class="skill-group">
+          <h3>Narzędzia i metodyki</h3>
+          <div class="tag-row"><span>Confluence</span><span>Sparx EA</span><span>Power Platform</span><span>Power Automate</span><span>PRINCE2</span><span>IREB</span><span>ITIL</span></div>
+        </div>
+        <div class="skill-group">
+          <h3>Języki</h3>
+          <ul class="lang-list">
+            <li>Polski <span class="lvl">Ojczysty</span></li>
+            <li>Angielski <span class="lvl">Zaawansowany zawodowo</span></li>
+            <li>Francuski <span class="lvl">Podstawowy</span></li>
+          </ul>
+        </div>
+        <div class="skill-group">
+          <h3>AI i nowe technologie</h3>
+          <div class="tag-row"><span>Bezpieczeństwo agentów AI</span><span>Prompt engineering</span><span>Cyfrowa transformacja</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pubs">
+    <div class="wrap">
+      <div class="sec-head"><span class="tag">§ 04</span><h2>Publikacje</h2></div>
+      <ul>
+        <li><em>Literatura na wolności</em></li>
+        <li><em>Przepływ danych w placówce informacyjnej Call Center</em></li>
+      </ul>
+    </div>
+  </section>
+
+
+  {latest.length > 0 && (
+    <section id="blog">
+      <div class="wrap">
+        <div class="sec-head"><span class="tag">§ 05</span><h2>Najnowsze na blogu</h2></div>
+        <div class="latest"><PostList posts={latest} /></div>
+        <a class="more-link" href="/blog/">Wszystkie wpisy i raporty →</a>
+      </div>
+    </section>
+  )}
+
+  <footer id="contact">
+    <div class="wrap">
+      <div class="sec-head"><span class="tag">§ 06</span></div>
+      <h2>Porozmawiajmy o Twoim procesie.</h2>
+      <p>Chętnie porozmawiam o analizie wymagań, optymalizacji procesów lub wdrożeniu, nad którym pracujesz.</p>
+      <div class="contact-grid">
+        <a class="cta ghost" href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="cta ghost" href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <div class="foot-bottom">
+        <span>Jan Dionizy Mejor — Analityk Biznesowy · Warszawa</span>
+        <span>Uniwersytet Warszawski, mgr informacji naukowej i bibliotekoznawstwa</span>
+      </div>
+    </div>
+  </footer>
+</Base>

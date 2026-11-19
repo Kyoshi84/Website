@@ -1,0 +1,66 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+  active?: 'home' | 'certs' | 'blog';
+}
+
+const {
+  title,
+  description = 'Jan Mejor — analityk biznesowy. Analiza wymagań, optymalizacja procesów, wdrożenia IT oraz raporty z rynku AI.',
+  active,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — Jan Mejor` : 'Jan Mejor — Analityk Biznesowy';
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const nav = [
+  { key: 'home', href: '/', label: 'Start' },
+  { key: 'certs', href: '/certyfikaty/', label: 'Certyfikaty' },
+  { key: 'blog', href: '/blog/', label: 'Blog' },
+];
+---
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{fullTitle}</title>
+  <meta name="description" content={description}>
+  <link rel="canonical" href={canonical}>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="alternate" type="application/rss+xml" title="Jan Mejor — Blog" href="/rss.xml">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content={fullTitle}>
+  <meta property="og:description" content={description}>
+  <meta property="og:url" content={canonical}>
+  <meta property="og:image" content={new URL('/photo.jpg', Astro.site)}>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="nav">
+    <div class="wrap nav-row">
+      <a href="/" class="wordmark" style="text-decoration:none">Jan Mejor <span>· Analityk Biznesowy</span></a>
+      <nav class="tabs" aria-label="Sekcje strony">
+        {nav.map((item) => (
+          <a class="tab-btn" href={item.href} aria-current={active === item.key ? 'page' : undefined}>{item.label}</a>
+        ))}
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <slot />
+  </main>
+
+  <div class="site-foot">
+    <div class="wrap">
+      <span>© {new Date().getFullYear()} Jan Dionizy Mejor</span>
+      <span><a href="/rss.xml">RSS</a> · <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a></span>
+    </div>
+  </div>
+</body>
+</html>

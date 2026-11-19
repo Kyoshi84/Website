@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPublishedPosts } from '../../lib/posts';
+
+const posts = await getPublishedPosts();
+---
+<Base title="Blog" active="blog" description="Raporty z rynku AI i nowych technologii oraz artykuły o analizie biznesowej.">
+  <section class="page-hero">
+    <div class="wrap">
+      <h1>Blog</h1>
+      <p>Cykliczne raporty z rynku AI i nowych technologii (ze szczególnym uwzględnieniem Polski i Bielika) oraz moje teksty o analizie biznesowej.</p>
+      <nav class="filters" aria-label="Kategorie">
+        <a href="/blog/" aria-current="page">Wszystko</a>
+        <a href="/blog/raporty-ai/">Raporty AI</a>
+        <a href="/blog/artykuly/">Artykuły</a>
+      </nav>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <PostList posts={posts} />
+    </div>
+  </section>
+</Base>

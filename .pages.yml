@@ -1,0 +1,54 @@
+# Konfiguracja Pages CMS (https://pagescms.org) — panel do pisania wpisów w przeglądarce.
+media:
+  input: public/images
+  output: /images
+
+content:
+  - name: blog
+    label: Blog
+    type: collection
+    path: src/content/blog
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, date, category, draft]
+      sort: [date]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Tytuł
+        type: string
+        required: true
+      - name: description
+        label: Opis (lead, 1–2 zdania)
+        type: text
+        required: true
+      - name: date
+        label: Data publikacji
+        type: date
+        required: true
+      - name: category
+        label: Kategoria
+        type: select
+        default: artykul
+        options:
+          values:
+            - value: artykul
+              label: Artykuł
+            - value: raport-ai
+              label: Raport AI
+      - name: tags
+        label: Tagi
+        type: string
+        list: true
+      - name: draft
+        label: Szkic (nie publikuj jeszcze)
+        type: boolean
+        default: true
+      - name: linkedin
+        label: Skrót na LinkedIn (nie pojawia się na stronie)
+        type: text
+      - name: body
+        label: Treść
+        type: rich-text

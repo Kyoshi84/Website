@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPublishedPosts } from '../../lib/posts';
+
+const posts = (await getPublishedPosts()).filter((p) => p.data.category === 'raport-ai');
+---
+<Base title="Raporty AI" active="blog" description="Cykliczne raporty z rynku AI: modele, polski rynek, Bielik AI, regulacje i konferencje.">
+  <section class="page-hero">
+    <div class="wrap">
+      <h1>Raporty AI</h1>
+      <p>Dwa razy w tygodniu: najważniejsze wiadomości o modelach AI, polskim rynku, Bieliku, regulacjach i nadchodzących konferencjach.</p>
+      <nav class="filters" aria-label="Kategorie">
+        <a href="/blog/">Wszystko</a>
+        <a href="/blog/raporty-ai/" aria-current="page">Raporty AI</a>
+        <a href="/blog/artykuly/">Artykuły</a>
+      </nav>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <PostList posts={posts} />
+    </div>
+  </section>
+</Base>

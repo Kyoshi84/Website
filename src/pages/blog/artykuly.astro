@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostList from '../../components/PostList.astro';
+import { getPublishedPosts } from '../../lib/posts';
+
+const posts = (await getPublishedPosts()).filter((p) => p.data.category === 'artykul');
+---
+<Base title="Artykuły" active="blog" description="Artykuły o analizie biznesowej, procesach i wdrożeniach IT.">
+  <section class="page-hero">
+    <div class="wrap">
+      <h1>Artykuły</h1>
+      <p>Teksty o analizie wymagań, procesach biznesowych i wdrożeniach IT.</p>
+      <nav class="filters" aria-label="Kategorie">
+        <a href="/blog/">Wszystko</a>
+        <a href="/blog/raporty-ai/">Raporty AI</a>
+        <a href="/blog/artykuly/" aria-current="page">Artykuły</a>
+      </nav>
+    </div>
+  </section>
+  <section>
+    <div class="wrap">
+      <PostList posts={posts} />
+    </div>
+  </section>
+</Base>
