@@ -2,9 +2,8 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-// Po pierwszym wdrożeniu zmień na swój adres z Cloudflare Pages
-// (np. https://jan-mejor.pages.dev) albo na własną domenę.
+// Adres produkcyjny strony (Cloudflare Pages + darmowa subdomena Open Domains).
 export default defineConfig({
-  site: 'https://jan-mejor.pages.dev',
+  site: 'https://www.unclekyoshi.is-not-a.dev',
   integrations: [sitemap()],
 });
