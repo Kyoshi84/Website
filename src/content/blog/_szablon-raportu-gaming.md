@@ -6,7 +6,7 @@ category: raport-gaming
 tags:
   - igaming
   - loterie
-draft: false
+draft: true
 linkedin: Krótki post na LinkedIn (3–5 zdań + link do raportu).
 ---
 
