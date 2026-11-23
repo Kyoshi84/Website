@@ -3,15 +3,13 @@ title: "Raport Gaming: [data od] – [data do]"
 description: "Jedno-dwa zdania: najważniejsze wydarzenie okresu."
 date: 2026-11-19
 category: raport-gaming
-tags: [igaming, loterie]
-draft: true
-linkedin: "Krótki post na LinkedIn (3–5 zdań + link do raportu)."
+tags:
+  - igaming
+  - loterie
+draft: false
+linkedin: Krótki post na LinkedIn (3–5 zdań + link do raportu).
 ---
 
-<!--
-SZABLON — draft: true, więc nie pojawia się na stronie.
-Skopiuj, zmień nazwę na np. 2026-11-24-raport-gaming.md i uzupełnij.
--->
 
 ## Najważniejsze w skrócie
 
@@ -40,3 +38,4 @@ Streszczenie w 2–3 zdaniach, własnymi słowami.
 ## Sygnały do obserwacji
 
 - …
+
