@@ -54,3 +54,47 @@ content:
       - name: body
         label: Treść
         type: rich-text
+
+  - name: konferencje
+    label: Kalendarz konferencji
+    type: file
+    path: src/data/konferencje.json
+    format: json
+    fields:
+      - name: aktualizacja
+        label: Data ostatniej aktualizacji (RRRR-MM-DD)
+        type: string
+      - name: wydarzenia
+        label: Wydarzenia
+        type: object
+        list: true
+        fields:
+          - { name: nazwa, label: Nazwa, type: string, required: true }
+          - { name: od, label: Od (RRRR-MM-DD), type: string, required: true }
+          - { name: do, label: Do (RRRR-MM-DD), type: string, required: true }
+          - { name: miasto, label: Miasto, type: string }
+          - { name: kraj, label: Kraj, type: string }
+          - name: region
+            label: Region
+            type: select
+            options:
+              values: [Europa, Ameryka Płn., Ameryka Płd., Afryka, Azja, Bliski Wschód, Oceania, Online]
+          - { name: obiekt, label: Obiekt / centrum targowe, type: string }
+          - { name: organizator, label: Organizator, type: string }
+          - { name: url, label: Strona wydarzenia, type: string, required: true }
+          - name: tagi
+            label: Tematy
+            type: select
+            options:
+              multiple: true
+              values: [iGaming, Kasyna, Zakłady, Loterie, Regulacje, Afiliacja, Nagrody, AI]
+          - name: status
+            label: Skąd data
+            type: select
+            default: organizator
+            options:
+              values:
+                - { value: organizator, label: Potwierdzona u organizatora }
+                - { value: agregator, label: Z agregatora }
+          - { name: zrodlo, label: Link do źródła daty, type: string }
+          - { name: uwaga, label: Uwaga (opcjonalnie), type: string }

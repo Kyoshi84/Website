@@ -1,0 +1,217 @@
+---
+import Base from '../../layouts/Base.astro';
+import BlogFilters from '../../components/BlogFilters.astro';
+import dane from '../../data/konferencje.json';
+
+type Wydarzenie = (typeof dane.wydarzenia)[number];
+
+const MIESIACE = ['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
+const MIES_DOP = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+
+function zakres(od: string, doDnia: string): string {
+  const [ry, rm, rd] = od.split('-').map(Number);
+  const [ky, km, kd] = doDnia.split('-').map(Number);
+  if (od === doDnia) return `${rd} ${MIES_DOP[rm - 1]}`;
+  if (rm === km && ry === ky) return `${rd}–${kd} ${MIES_DOP[rm - 1]}`;
+  return `${rd} ${MIES_DOP[rm - 1]} – ${kd} ${MIES_DOP[km - 1]}`;
+}
+
+// Na etapie budowania odrzucamy wydarzenia zakończone; skrypt w przeglądarce robi to samo codziennie.
+const dzis = new Date().toISOString().slice(0, 10);
+const nadchodzace = dane.wydarzenia
+  .filter((e) => e.do >= dzis)
+  .sort((a, b) => a.od.localeCompare(b.od) || a.nazwa.localeCompare(b.nazwa));
+
+const grupy = new Map<string, Wydarzenie[]>();
+for (const e of nadchodzace) {
+  const klucz = e.od.slice(0, 7);
+  if (!grupy.has(klucz)) grupy.set(klucz, []);
+  grupy.get(klucz)!.push(e);
+}
+
+const wszystkieTagi = [...new Set(dane.wydarzenia.flatMap((e) => e.tagi))].sort((a, b) => a.localeCompare(b, 'pl'));
+const wszystkieRegiony = [...new Set(dane.wydarzenia.map((e) => e.region))].sort((a, b) => a.localeCompare(b, 'pl'));
+const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
+---
+<Base title="Kalendarz konferencji iGaming i loterii" active="blog" description="Nadchodzące konferencje i targi branży iGaming, kasyn, zakładów sportowych i loterii — z datami, miejscem, organizatorem i plikiem do kalendarza.">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="kicker">Blog · kalendarz</span>
+      <h1>Konferencje i targi: iGaming, zakłady, loterie</h1>
+      <p>Zbieram tu branżowe wydarzenia, żeby nie dowiadywać się o nich dzień po zamknięciu rejestracji. Daty biorę ze stron organizatorów, a tam, gdzie się nie dało, z agregatorów — i wtedy to zaznaczam. Przed rezerwacją lotu i tak kliknij w link organizatora.</p>
+      <BlogFilters current="konferencje" />
+    </div>
+  </section>
+
+  <section class="cal-section">
+    <div class="wrap">
+      <div class="cal-tools" id="cal-tools">
+        <div class="cal-row">
+          <span class="cal-label mono">Temat</span>
+          <div class="chips" data-grupa="tag">
+            <button type="button" class="chip" aria-pressed="true" data-wartosc="">Wszystkie</button>
+            {wszystkieTagi.map((t) => <button type="button" class="chip" aria-pressed="false" data-wartosc={t}>{t}</button>)}
+          </div>
+        </div>
+        <div class="cal-row">
+          <span class="cal-label mono">Region</span>
+          <div class="chips" data-grupa="region">
+            <button type="button" class="chip" aria-pressed="true" data-wartosc="">Cały świat</button>
+            {wszystkieRegiony.map((r) => <button type="button" class="chip" aria-pressed="false" data-wartosc={r}>{r}</button>)}
+          </div>
+        </div>
+        <div class="cal-row cal-row-end">
+          <label class="cal-search">
+            <span class="sr-only">Szukaj</span>
+            <input type="search" id="cal-q" placeholder="Szukaj: nazwa, miasto, organizator…" autocomplete="off">
+          </label>
+          <button type="button" class="cta ghost cal-ics-all" id="cal-ics-all">Pobierz widoczne do kalendarza (.ics)</button>
+        </div>
+        <p class="cal-count mono" id="cal-count" aria-live="polite">{nadchodzace.length} wydarzeń</p>
+      </div>
+
+      {[...grupy.entries()].map(([klucz, lista]) => {
+        const [r, m] = klucz.split('-').map(Number);
+        return (
+          <div class="cal-month" data-miesiac={klucz}>
+            <h2 class="cal-month-h"><span>{MIESIACE[m - 1]}</span> {r}</h2>
+            <ol class="cal-list">
+              {lista.map((e) => (
+                <li
+                  class="cal-item"
+                  data-od={e.od}
+                  data-do={e.do}
+                  data-tagi={e.tagi.join('|')}
+                  data-region={e.region}
+                  data-szukaj={`${e.nazwa} ${e.miasto} ${e.kraj} ${e.organizator} ${e.obiekt}`.toLowerCase()}
+                  data-nazwa={e.nazwa}
+                  data-miejsce={[e.obiekt, e.miasto, e.kraj].filter(Boolean).join(', ')}
+                  data-url={e.url}
+                >
+                  <div class="cal-date mono">{zakres(e.od, e.do)}</div>
+                  <div class="cal-body">
+                    <h3><a href={e.url} target="_blank" rel="noopener">{e.nazwa}</a></h3>
+                    <p class="cal-where">
+                      {[e.obiekt, e.miasto, e.kraj].filter(Boolean).join(' · ')}
+                    </p>
+                    <div class="cal-meta">
+                      {e.tagi.map((t) => <span class="badge gaming">{t}</span>)}
+                      {e.organizator && <span class="cal-org">Organizator: {e.organizator}</span>}
+                    </div>
+                    {e.uwaga && <p class="cal-note">{e.uwaga}</p>}
+                    <div class="cal-foot mono">
+                      {e.status === 'organizator'
+                        ? <span class="cal-ok" title="Data sprawdzona na stronie organizatora">✓ potwierdzone u organizatora</span>
+                        : <span class="cal-warn" title="Data z agregatora — sprawdź u organizatora">wg agregatora</span>}
+                      <a href={e.zrodlo} target="_blank" rel="noopener">źródło: {host(e.zrodlo)}</a>
+                      <button type="button" class="cal-ics">+ do kalendarza</button>
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        );
+      })}
+
+      <p class="empty" id="cal-empty" hidden>Nic nie pasuje do filtrów. Spróbuj szerzej.</p>
+
+      <div class="method cal-method">
+        <p><span class="mono">Skąd te dane:</span> strony organizatorów (SiGMA Group, SBC, Eventus International) oraz agregatory — <a href="https://www.casinocitypress.com/tradeshows/" target="_blank" rel="noopener">Casino City Press</a> i jego serwis <a href="https://www.gamingmeets.com/" target="_blank" rel="noopener">GamingMeets</a>. Gdy daty się różnią, wpisuję wersję organizatora i dodaję notkę. Ostatnia aktualizacja listy: {dane.aktualizacja}.</p>
+        <p>Brakuje wydarzenia albo coś się nie zgadza? <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">Napisz do mnie na LinkedIn</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const dzis = new Date();
+    const iso = `${dzis.getFullYear()}-${String(dzis.getMonth() + 1).padStart(2, '0')}-${String(dzis.getDate()).padStart(2, '0')}`;
+    const items = Array.from(document.querySelectorAll<HTMLLIElement>('.cal-item'));
+    const months = Array.from(document.querySelectorAll<HTMLElement>('.cal-month'));
+    const count = document.getElementById('cal-count')!;
+    const empty = document.getElementById('cal-empty')!;
+    const q = document.getElementById('cal-q') as HTMLInputElement;
+    const stan: Record<string, string> = { tag: '', region: '' };
+
+    // Wydarzenia, które skończyły się po ostatnim buildzie, znikają same.
+    items.forEach((li) => { if ((li.dataset.do ?? '') < iso) li.remove(); });
+    const zywe = () => Array.from(document.querySelectorAll<HTMLLIElement>('.cal-item'));
+
+    function odmiana(n: number) {
+      if (n === 1) return 'wydarzenie';
+      const r10 = n % 10, r100 = n % 100;
+      return r10 >= 2 && r10 <= 4 && (r100 < 12 || r100 > 14) ? 'wydarzenia' : 'wydarzeń';
+    }
+
+    function filtruj() {
+      const fraza = q.value.trim().toLowerCase();
+      let widoczne = 0;
+      zywe().forEach((li) => {
+        const tagi = (li.dataset.tagi ?? '').split('|');
+        const ok = (!stan.tag || tagi.includes(stan.tag))
+          && (!stan.region || li.dataset.region === stan.region)
+          && (!fraza || (li.dataset.szukaj ?? '').includes(fraza));
+        li.hidden = !ok;
+        if (ok) widoczne++;
+      });
+      months.forEach((m) => { m.hidden = !m.querySelector('.cal-item:not([hidden])'); });
+      count.textContent = `${widoczne} ${odmiana(widoczne)}`;
+      empty.hidden = widoczne > 0;
+    }
+
+    document.querySelectorAll<HTMLElement>('.chips').forEach((grupa) => {
+      grupa.addEventListener('click', (ev) => {
+        const btn = (ev.target as HTMLElement).closest<HTMLButtonElement>('.chip');
+        if (!btn) return;
+        grupa.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === btn)));
+        stan[grupa.dataset.grupa!] = btn.dataset.wartosc ?? '';
+        filtruj();
+      });
+    });
+    q.addEventListener('input', filtruj);
+
+    // ---- iCalendar ----
+    const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/[,;]/g, (m) => '\\' + m).replace(/\n/g, '\\n');
+    function dzienPo(d: string) {
+      const t = new Date(d + 'T12:00:00Z');
+      t.setUTCDate(t.getUTCDate() + 1);
+      return t.toISOString().slice(0, 10).replace(/-/g, '');
+    }
+    function vevent(li: HTMLElement) {
+      const d = li.dataset;
+      const stamp = new Date().toISOString().replace(/[-:]/g, '').slice(0, 15) + 'Z';
+      return [
+        'BEGIN:VEVENT',
+        `UID:${d.od}-${(d.nazwa ?? '').toLowerCase().replace(/[^a-z0-9]+/g, '-')}@unclekyoshi.is-not-a.dev`,
+        `DTSTAMP:${stamp}`,
+        `DTSTART;VALUE=DATE:${(d.od ?? '').replace(/-/g, '')}`,
+        `DTEND;VALUE=DATE:${dzienPo(d.do ?? d.od ?? '')}`,
+        `SUMMARY:${esc(d.nazwa ?? '')}`,
+        `LOCATION:${esc(d.miejsce ?? '')}`,
+        `URL:${d.url}`,
+        `DESCRIPTION:${esc('Szczegóły: ' + d.url)}`,
+        'END:VEVENT',
+      ].join('\r\n');
+    }
+    function pobierz(lista: HTMLElement[], plik: string) {
+      const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Jan Mejor//Kalendarz konferencji//PL', 'CALSCALE:GREGORIAN', ...lista.map(vevent), 'END:VCALENDAR'].join('\r\n');
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+      a.download = plik;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 0);
+    }
+    document.addEventListener('click', (ev) => {
+      const btn = (ev.target as HTMLElement).closest('.cal-ics');
+      if (!btn) return;
+      const li = btn.closest<HTMLElement>('.cal-item')!;
+      pobierz([li], (li.dataset.nazwa ?? 'wydarzenie').replace(/[^\p{L}\p{N}]+/gu, '-') + '.ics');
+    });
+    document.getElementById('cal-ics-all')!.addEventListener('click', () => {
+      pobierz(zywe().filter((li) => !li.hidden), 'konferencje-igaming.ics');
+    });
+
+    filtruj();
+  </script>
+</Base>

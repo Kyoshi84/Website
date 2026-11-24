@@ -9,6 +9,7 @@ Każdy push na gałąź `master` automatycznie publikuje nową wersję.
 |---|---|
 | `src/pages/index.astro` | Strona główna (portfolio) |
 | `src/pages/certyfikaty.astro` | Rejestr certyfikatów i szkoleń |
+| `src/data/konferencje.json` | **Kalendarz konferencji** (strona `/blog/konferencje/`) — jedno wydarzenie = jeden obiekt; zakończone znikają same |
 | `src/content/blog/` | **Wpisy bloga** w Markdown — tu dodajesz treści |
 | `src/styles/global.css` | Wygląd strony |
 | `public/` | Zdjęcie, favicon, obrazki do wpisów (`public/images/`) |
