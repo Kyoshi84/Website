@@ -233,7 +233,7 @@ table.reg td.year{font-family:'IBM Plex Mono',monospace;color:var(--amber);text-
 .cal-month-h span{color:var(--text-hi);text-transform:capitalize;font-weight:600;}
 .cal-list{list-style:none;}
 .cal-item{display:grid;grid-template-columns:150px 1fr;gap:18px;padding:18px 0;border-bottom:1px solid var(--line);}
-.cal-item:first-child{border-top:1px solid var(--line);}
+.cal-list{border-top:1px solid var(--line);}
 .cal-date{color:var(--amber);font-size:0.85rem;padding-top:3px;}
 .cal-body h3{font-size:1.12rem;margin-bottom:4px;}
 .cal-body h3 a{text-decoration:none;}
@@ -255,3 +255,18 @@ table.reg td.year{font-family:'IBM Plex Mono',monospace;color:var(--amber);text-
   .cal-item{grid-template-columns:1fr;gap:4px;}
   .cal-label{flex-basis:100%;padding-top:0;}
 }
+.chip-n{font-family:'IBM Plex Mono',monospace;font-size:0.72rem;opacity:0.7;margin-left:2px;}
+.chip.toggle[aria-pressed="true"]{border-color:var(--amber);background:rgba(226,166,64,0.14);}
+.badge.tag{border-color:var(--line);color:var(--text-lo);}
+.badge.branza.gaming{border-color:#14b8a6;color:#14b8a6;}
+.badge.branza.ai{border-color:var(--indigo-soft);color:var(--indigo-soft);}
+.cal-pl{display:inline-block;margin-left:8px;vertical-align:middle;font:600 0.66rem 'IBM Plex Mono',monospace;padding:2px 5px;border-radius:3px;background:#dc143c;color:#fff;}
+.cal-cfp{margin-top:8px;font-size:0.86rem;color:var(--text-hi);}
+.cal-cfp::before{content:"🎤 ";}
+.cal-cfp a{color:var(--indigo-soft);}
+.cal-reset{font:500 0.8rem 'Inter',sans-serif;background:none;border:none;color:var(--indigo-soft);cursor:pointer;text-decoration:underline;text-underline-offset:3px;margin-left:auto;}
+.cal-row-end .cal-count{margin:0;}
+.cal-method ul{margin:6px 0 10px 18px;}
+.cal-method li{margin-bottom:4px;}
+.cal-method strong{color:var(--text-hi);}
+[hidden]{display:none !important;}

@@ -70,6 +70,14 @@ content:
         list: true
         fields:
           - { name: nazwa, label: Nazwa, type: string, required: true }
+          - name: branza
+            label: Branża
+            type: select
+            default: ai-tech
+            options:
+              values:
+                - { value: gaming, label: Gaming i loterie }
+                - { value: ai-tech, label: AI i technologie }
           - { name: od, label: Od (RRRR-MM-DD), type: string, required: true }
           - { name: do, label: Do (RRRR-MM-DD), type: string, required: true }
           - { name: miasto, label: Miasto, type: string }
@@ -87,7 +95,7 @@ content:
             type: select
             options:
               multiple: true
-              values: [iGaming, Kasyna, Zakłady, Loterie, Regulacje, Afiliacja, Nagrody, AI]
+              values: [iGaming, Kasyna, Zakłady, Loterie, Regulacje, Afiliacja, Nagrody, AI biznes, Badania, Deweloperzy, Data, Startupy, Cyberbezpieczeństwo]
           - name: status
             label: Skąd data
             type: select
@@ -98,3 +106,5 @@ content:
                 - { value: agregator, label: Z agregatora }
           - { name: zrodlo, label: Link do źródła daty, type: string }
           - { name: uwaga, label: Uwaga (opcjonalnie), type: string }
+          - { name: cfp, label: Koniec naboru prelegentów CFP (RRRR-MM-DD; opcjonalnie), type: string }
+          - { name: cfpUrl, label: Link do zgłoszeń CFP (opcjonalnie), type: string }

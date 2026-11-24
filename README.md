@@ -9,7 +9,7 @@ Każdy push na gałąź `master` automatycznie publikuje nową wersję.
 |---|---|
 | `src/pages/index.astro` | Strona główna (portfolio) |
 | `src/pages/certyfikaty.astro` | Rejestr certyfikatów i szkoleń |
-| `src/data/konferencje.json` | **Kalendarz konferencji** (strona `/blog/konferencje/`) — jedno wydarzenie = jeden obiekt; zakończone znikają same |
+| `src/data/konferencje.json` | **Kalendarz konferencji** (strona `/blog/konferencje/`): gaming + AI/tech w jednym pliku, pole `branza` = `gaming` / `ai-tech`; zakończone znikają same. Filtry można linkować, np. `/blog/konferencje/?branza=ai-tech&polska=1` |
 | `src/content/blog/` | **Wpisy bloga** w Markdown — tu dodajesz treści |
 | `src/styles/global.css` | Wygląd strony |
 | `public/` | Zdjęcie, favicon, obrazki do wpisów (`public/images/`) |

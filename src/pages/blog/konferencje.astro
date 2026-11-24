@@ -8,12 +8,23 @@ type Wydarzenie = (typeof dane.wydarzenia)[number];
 const MIESIACE = ['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
 const MIES_DOP = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
 
+const BRANZE = [
+  { klucz: 'gaming', etykieta: 'Gaming i loterie', klasa: 'gaming' },
+  { klucz: 'ai-tech', etykieta: 'AI i technologie', klasa: 'ai' },
+] as const;
+const etykietaBranzy = (k: string) => BRANZE.find((b) => b.klucz === k)?.etykieta ?? k;
+const klasaBranzy = (k: string) => BRANZE.find((b) => b.klucz === k)?.klasa ?? '';
+
 function zakres(od: string, doDnia: string): string {
   const [ry, rm, rd] = od.split('-').map(Number);
   const [ky, km, kd] = doDnia.split('-').map(Number);
   if (od === doDnia) return `${rd} ${MIES_DOP[rm - 1]}`;
   if (rm === km && ry === ky) return `${rd}–${kd} ${MIES_DOP[rm - 1]}`;
   return `${rd} ${MIES_DOP[rm - 1]} – ${kd} ${MIES_DOP[km - 1]}`;
+}
+function dzienMies(iso: string): string {
+  const [, m, d] = iso.split('-').map(Number);
+  return `${d} ${MIES_DOP[m - 1]}`;
 }
 
 // Na etapie budowania odrzucamy wydarzenia zakończone; skrypt w przeglądarce robi to samo codziennie.
@@ -29,16 +40,23 @@ for (const e of nadchodzace) {
   grupy.get(klucz)!.push(e);
 }
 
-const wszystkieTagi = [...new Set(dane.wydarzenia.flatMap((e) => e.tagi))].sort((a, b) => a.localeCompare(b, 'pl'));
+// Tematy: zapamiętujemy, w których branżach występują, żeby chować nieistotne chipy.
+const tematy = new Map<string, Set<string>>();
+for (const e of dane.wydarzenia) for (const t of e.tagi) {
+  if (!tematy.has(t)) tematy.set(t, new Set());
+  tematy.get(t)!.add(e.branza);
+}
+const listaTematow = [...tematy.entries()].sort((a, b) => a[0].localeCompare(b[0], 'pl'));
 const wszystkieRegiony = [...new Set(dane.wydarzenia.map((e) => e.region))].sort((a, b) => a.localeCompare(b, 'pl'));
+const ileWBranzy = (k: string) => nadchodzace.filter((e) => e.branza === k).length;
 const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 ---
-<Base title="Kalendarz konferencji iGaming i loterii" active="blog" description="Nadchodzące konferencje i targi branży iGaming, kasyn, zakładów sportowych i loterii — z datami, miejscem, organizatorem i plikiem do kalendarza.">
+<Base title="Kalendarz konferencji: gaming, AI i technologie" active="blog" description="Nadchodzące konferencje i targi: iGaming, zakłady, kasyna i loterie oraz AI, data i nowe technologie — z datami, miejscem, terminami CFP i plikiem do kalendarza.">
   <section class="page-hero">
     <div class="wrap">
       <span class="kicker">Blog · kalendarz</span>
-      <h1>Konferencje i targi: iGaming, zakłady, loterie</h1>
-      <p>Zbieram tu branżowe wydarzenia, żeby nie dowiadywać się o nich dzień po zamknięciu rejestracji. Daty biorę ze stron organizatorów, a tam, gdzie się nie dało, z agregatorów — i wtedy to zaznaczam. Przed rezerwacją lotu i tak kliknij w link organizatora.</p>
+      <h1>Kalendarz konferencji: gaming, AI i technologie</h1>
+      <p>Jedno miejsce na wszystkie wydarzenia, które śledzę: targi iGaming i loterii oraz konferencje o AI, danych i nowych technologiach. Daty biorę ze stron organizatorów albo z otwartych baz i agregatorów — przy każdym wydarzeniu widać skąd. Przed rezerwacją lotu i tak kliknij w link organizatora.</p>
       <BlogFilters current="konferencje" />
     </div>
   </section>
@@ -47,10 +65,17 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     <div class="wrap">
       <div class="cal-tools" id="cal-tools">
         <div class="cal-row">
+          <span class="cal-label mono">Branża</span>
+          <div class="chips" data-grupa="branza">
+            <button type="button" class="chip" aria-pressed="true" data-wartosc="">Wszystko <span class="chip-n">{nadchodzace.length}</span></button>
+            {BRANZE.map((b) => <button type="button" class="chip" aria-pressed="false" data-wartosc={b.klucz}>{b.etykieta} <span class="chip-n">{ileWBranzy(b.klucz)}</span></button>)}
+          </div>
+        </div>
+        <div class="cal-row">
           <span class="cal-label mono">Temat</span>
           <div class="chips" data-grupa="tag">
             <button type="button" class="chip" aria-pressed="true" data-wartosc="">Wszystkie</button>
-            {wszystkieTagi.map((t) => <button type="button" class="chip" aria-pressed="false" data-wartosc={t}>{t}</button>)}
+            {listaTematow.map(([t, br]) => <button type="button" class="chip" aria-pressed="false" data-wartosc={t} data-branze={[...br].join('|')}>{t}</button>)}
           </div>
         </div>
         <div class="cal-row">
@@ -60,6 +85,14 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
             {wszystkieRegiony.map((r) => <button type="button" class="chip" aria-pressed="false" data-wartosc={r}>{r}</button>)}
           </div>
         </div>
+        <div class="cal-row">
+          <span class="cal-label mono">Tylko</span>
+          <div class="chips">
+            <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="polska">W Polsce</button>
+            <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="potwierdzone">Potwierdzone u organizatora</button>
+            <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="cfp">Otwarty nabór prelegentów (CFP)</button>
+          </div>
+        </div>
         <div class="cal-row cal-row-end">
           <label class="cal-search">
             <span class="sr-only">Szukaj</span>
@@ -67,7 +100,10 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
           </label>
           <button type="button" class="cta ghost cal-ics-all" id="cal-ics-all">Pobierz widoczne do kalendarza (.ics)</button>
         </div>
-        <p class="cal-count mono" id="cal-count" aria-live="polite">{nadchodzace.length} wydarzeń</p>
+        <div class="cal-row cal-row-end">
+          <p class="cal-count mono" id="cal-count" aria-live="polite">{nadchodzace.length} wydarzeń</p>
+          <button type="button" class="cal-reset" id="cal-reset" hidden>Wyczyść filtry</button>
+        </div>
       </div>
 
       {[...grupy.entries()].map(([klucz, lista]) => {
@@ -81,28 +117,38 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
                   class="cal-item"
                   data-od={e.od}
                   data-do={e.do}
+                  data-branza={e.branza}
                   data-tagi={e.tagi.join('|')}
                   data-region={e.region}
-                  data-szukaj={`${e.nazwa} ${e.miasto} ${e.kraj} ${e.organizator} ${e.obiekt}`.toLowerCase()}
+                  data-kraj={e.kraj}
+                  data-status={e.status}
+                  data-cfp={e.cfp}
+                  data-szukaj={`${e.nazwa} ${e.miasto} ${e.kraj} ${e.organizator} ${e.obiekt} ${e.tagi.join(' ')}`.toLowerCase()}
                   data-nazwa={e.nazwa}
                   data-miejsce={[e.obiekt, e.miasto, e.kraj].filter(Boolean).join(', ')}
                   data-url={e.url}
                 >
                   <div class="cal-date mono">{zakres(e.od, e.do)}</div>
                   <div class="cal-body">
-                    <h3><a href={e.url} target="_blank" rel="noopener">{e.nazwa}</a></h3>
+                    <h3><a href={e.url} target="_blank" rel="noopener">{e.nazwa}</a>{e.kraj === 'Polska' && <span class="cal-pl" title="Wydarzenie w Polsce">PL</span>}</h3>
                     <p class="cal-where">
                       {[e.obiekt, e.miasto, e.kraj].filter(Boolean).join(' · ')}
                     </p>
                     <div class="cal-meta">
-                      {e.tagi.map((t) => <span class="badge gaming">{t}</span>)}
+                      <span class={`badge branza ${klasaBranzy(e.branza)}`}>{etykietaBranzy(e.branza)}</span>
+                      {e.tagi.map((t) => <span class="badge tag">{t}</span>)}
                       {e.organizator && <span class="cal-org">Organizator: {e.organizator}</span>}
                     </div>
                     {e.uwaga && <p class="cal-note">{e.uwaga}</p>}
+                    {e.cfp && (
+                      <p class="cal-cfp" data-cfp-do={e.cfp}>
+                        Call for papers do {dzienMies(e.cfp)}{e.cfpUrl && <> — <a href={e.cfpUrl} target="_blank" rel="noopener">zgłoś wystąpienie</a></>}
+                      </p>
+                    )}
                     <div class="cal-foot mono">
                       {e.status === 'organizator'
                         ? <span class="cal-ok" title="Data sprawdzona na stronie organizatora">✓ potwierdzone u organizatora</span>
-                        : <span class="cal-warn" title="Data z agregatora — sprawdź u organizatora">wg agregatora</span>}
+                        : <span class="cal-warn" title="Data z agregatora lub otwartej bazy — sprawdź u organizatora">wg agregatora</span>}
                       <a href={e.zrodlo} target="_blank" rel="noopener">źródło: {host(e.zrodlo)}</a>
                       <button type="button" class="cal-ics">+ do kalendarza</button>
                     </div>
@@ -117,7 +163,12 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
       <p class="empty" id="cal-empty" hidden>Nic nie pasuje do filtrów. Spróbuj szerzej.</p>
 
       <div class="method cal-method">
-        <p><span class="mono">Skąd te dane:</span> strony organizatorów (SiGMA Group, SBC, Eventus International) oraz agregatory — <a href="https://www.casinocitypress.com/tradeshows/" target="_blank" rel="noopener">Casino City Press</a> i jego serwis <a href="https://www.gamingmeets.com/" target="_blank" rel="noopener">GamingMeets</a>. Gdy daty się różnią, wpisuję wersję organizatora i dodaję notkę. Ostatnia aktualizacja listy: {dane.aktualizacja}.</p>
+        <p><span class="mono">Skąd te dane:</span></p>
+        <ul>
+          <li><strong>Gaming i loterie:</strong> strony organizatorów (SiGMA Group, SBC, Eventus International) oraz agregator <a href="https://www.casinocitypress.com/tradeshows/" target="_blank" rel="noopener">Casino City Press</a> z serwisem <a href="https://www.gamingmeets.com/" target="_blank" rel="noopener">GamingMeets</a>.</li>
+          <li><strong>AI i technologie:</strong> otwarta baza <a href="https://confs.tech/" target="_blank" rel="noopener">confs.tech</a> (tam też terminy CFP), konferencje naukowe z <a href="https://github.com/ccfddl/ccf-deadlines" target="_blank" rel="noopener">ccf-deadlines</a> (źródło danych <a href="https://huggingface.co/spaces/huggingface/ai-deadlines" target="_blank" rel="noopener">AI Deadlines</a>), przegląd dat sprawdzonych u organizatorów przez <a href="https://uvik.net/blog/ai-conferences/" target="_blank" rel="noopener">Uvik Software</a> oraz polskie wydarzenia z <a href="https://crossweb.pl/wydarzenia/" target="_blank" rel="noopener">Crossweb</a>.</li>
+        </ul>
+        <p>Gdy daty się różnią, wpisuję wersję organizatora i dodaję notkę. Ostatnia aktualizacja listy: {dane.aktualizacja}.</p>
         <p>Brakuje wydarzenia albo coś się nie zgadza? <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">Napisz do mnie na LinkedIn</a>.</p>
       </div>
     </div>
@@ -126,15 +177,19 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   <script>
     const dzis = new Date();
     const iso = `${dzis.getFullYear()}-${String(dzis.getMonth() + 1).padStart(2, '0')}-${String(dzis.getDate()).padStart(2, '0')}`;
-    const items = Array.from(document.querySelectorAll<HTMLLIElement>('.cal-item'));
     const months = Array.from(document.querySelectorAll<HTMLElement>('.cal-month'));
     const count = document.getElementById('cal-count')!;
     const empty = document.getElementById('cal-empty')!;
+    const reset = document.getElementById('cal-reset')!;
     const q = document.getElementById('cal-q') as HTMLInputElement;
-    const stan: Record<string, string> = { tag: '', region: '' };
+    const stan: Record<string, string> = { branza: '', tag: '', region: '' };
+    const przel: Record<string, boolean> = { polska: false, potwierdzone: false, cfp: false };
 
-    // Wydarzenia, które skończyły się po ostatnim buildzie, znikają same.
-    items.forEach((li) => { if ((li.dataset.do ?? '') < iso) li.remove(); });
+    // Wydarzenia, które skończyły się po ostatnim buildzie, znikają same; tak samo przeterminowane CFP.
+    document.querySelectorAll<HTMLLIElement>('.cal-item').forEach((li) => { if ((li.dataset.do ?? '') < iso) li.remove(); });
+    document.querySelectorAll<HTMLElement>('.cal-cfp').forEach((p) => {
+      if ((p.dataset.cfpDo ?? '') < iso) { p.remove(); (p.closest('.cal-item') as HTMLElement | null)?.setAttribute('data-cfp', ''); }
+    });
     const zywe = () => Array.from(document.querySelectorAll<HTMLLIElement>('.cal-item'));
 
     function odmiana(n: number) {
@@ -143,32 +198,92 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
       return r10 >= 2 && r10 <= 4 && (r100 < 12 || r100 > 14) ? 'wydarzenia' : 'wydarzeń';
     }
 
+    function ustawChip(grupa: string, wartosc: string) {
+      document.querySelectorAll<HTMLButtonElement>(`.chips[data-grupa="${grupa}"] .chip`).forEach((c) => {
+        c.setAttribute('aria-pressed', String((c.dataset.wartosc ?? '') === wartosc));
+      });
+    }
+
+    // Chipy tematów nieobecnych w wybranej branży chowamy (i zerujemy wybór, jeśli zniknął).
+    function odswiezTematy() {
+      document.querySelectorAll<HTMLButtonElement>('.chips[data-grupa="tag"] .chip[data-branze]').forEach((c) => {
+        const ok = !stan.branza || (c.dataset.branze ?? '').split('|').includes(stan.branza);
+        c.hidden = !ok;
+        if (!ok && stan.tag === c.dataset.wartosc) { stan.tag = ''; ustawChip('tag', ''); }
+      });
+    }
+
+    function zapiszUrl() {
+      const p = new URLSearchParams();
+      Object.entries(stan).forEach(([k, v]) => { if (v) p.set(k, v); });
+      Object.entries(przel).forEach(([k, v]) => { if (v) p.set(k, '1'); });
+      if (q.value.trim()) p.set('q', q.value.trim());
+      const s = p.toString();
+      history.replaceState(null, '', s ? `?${s}` : location.pathname);
+    }
+
     function filtruj() {
       const fraza = q.value.trim().toLowerCase();
       let widoczne = 0;
       zywe().forEach((li) => {
-        const tagi = (li.dataset.tagi ?? '').split('|');
-        const ok = (!stan.tag || tagi.includes(stan.tag))
-          && (!stan.region || li.dataset.region === stan.region)
-          && (!fraza || (li.dataset.szukaj ?? '').includes(fraza));
+        const d = li.dataset;
+        const tagi = (d.tagi ?? '').split('|');
+        const ok = (!stan.branza || d.branza === stan.branza)
+          && (!stan.tag || tagi.includes(stan.tag))
+          && (!stan.region || d.region === stan.region)
+          && (!przel.polska || d.kraj === 'Polska')
+          && (!przel.potwierdzone || d.status === 'organizator')
+          && (!przel.cfp || !!d.cfp)
+          && (!fraza || (d.szukaj ?? '').includes(fraza));
         li.hidden = !ok;
         if (ok) widoczne++;
       });
       months.forEach((m) => { m.hidden = !m.querySelector('.cal-item:not([hidden])'); });
       count.textContent = `${widoczne} ${odmiana(widoczne)}`;
       empty.hidden = widoczne > 0;
+      reset.hidden = !(Object.values(stan).some(Boolean) || Object.values(przel).some(Boolean) || fraza);
+      zapiszUrl();
     }
 
-    document.querySelectorAll<HTMLElement>('.chips').forEach((grupa) => {
+    document.querySelectorAll<HTMLElement>('.chips[data-grupa]').forEach((grupa) => {
       grupa.addEventListener('click', (ev) => {
         const btn = (ev.target as HTMLElement).closest<HTMLButtonElement>('.chip');
         if (!btn) return;
-        grupa.querySelectorAll('.chip').forEach((c) => c.setAttribute('aria-pressed', String(c === btn)));
         stan[grupa.dataset.grupa!] = btn.dataset.wartosc ?? '';
+        ustawChip(grupa.dataset.grupa!, stan[grupa.dataset.grupa!]);
+        if (grupa.dataset.grupa === 'branza') odswiezTematy();
+        filtruj();
+      });
+    });
+    document.querySelectorAll<HTMLButtonElement>('.chip[data-przelacznik]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const k = btn.dataset.przelacznik!;
+        przel[k] = !przel[k];
+        btn.setAttribute('aria-pressed', String(przel[k]));
         filtruj();
       });
     });
     q.addEventListener('input', filtruj);
+    reset.addEventListener('click', () => {
+      Object.keys(stan).forEach((k) => { stan[k] = ''; ustawChip(k, ''); });
+      Object.keys(przel).forEach((k) => { przel[k] = false; });
+      document.querySelectorAll('.chip[data-przelacznik]').forEach((c) => c.setAttribute('aria-pressed', 'false'));
+      q.value = '';
+      odswiezTematy();
+      filtruj();
+    });
+
+    // Filtry z adresu (np. /blog/konferencje/?branza=ai-tech) — do linkowania z raportów.
+    const params = new URLSearchParams(location.search);
+    for (const k of Object.keys(stan)) {
+      const v = params.get(k);
+      if (v && document.querySelector(`.chips[data-grupa="${k}"] .chip[data-wartosc="${CSS.escape(v)}"]`)) { stan[k] = v; ustawChip(k, v); }
+    }
+    for (const k of Object.keys(przel)) {
+      if (params.get(k) === '1') { przel[k] = true; document.querySelector(`.chip[data-przelacznik="${k}"]`)?.setAttribute('aria-pressed', 'true'); }
+    }
+    if (params.get('q')) q.value = params.get('q')!;
+    odswiezTematy();
 
     // ---- iCalendar ----
     const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/[,;]/g, (m) => '\\' + m).replace(/\n/g, '\\n');
@@ -209,7 +324,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
       pobierz([li], (li.dataset.nazwa ?? 'wydarzenie').replace(/[^\p{L}\p{N}]+/gu, '-') + '.ics');
     });
     document.getElementById('cal-ics-all')!.addEventListener('click', () => {
-      pobierz(zywe().filter((li) => !li.hidden), 'konferencje-igaming.ics');
+      pobierz(zywe().filter((li) => !li.hidden), 'konferencje.ics');
     });
 
     filtruj();
