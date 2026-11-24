@@ -42,6 +42,27 @@
    "cfpUrl": ""
   },
   {
+   "nazwa": "Bielik Summit 2026",
+   "od": "2026-11-26",
+   "do": "2026-11-26",
+   "miasto": "Warszawa",
+   "kraj": "Polska",
+   "region": "Europa",
+   "obiekt": "Muzeum Wojska Polskiego",
+   "organizator": "Bielik.AI, Navigator AI, SpeakLeash",
+   "url": "https://bieliksummit.ai/",
+   "tagi": [
+    "AI biznes",
+    "Badania"
+   ],
+   "status": "organizator",
+   "zrodlo": "https://bieliksummit.ai/",
+   "uwaga": "Tylko stacjonarnie, bez transmisji online. Ok. 100 prelegentów, 4 sceny; wdrożenia AI w biznesie i warsztat zespołu Bielika.",
+   "branza": "ai-tech",
+   "cfp": "",
+   "cfpUrl": ""
+  },
+  {
    "nazwa": "Data Science Summit 2026",
    "od": "2026-11-26",
    "do": "2026-11-27",
