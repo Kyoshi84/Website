@@ -5,7 +5,7 @@ import CoffeeLink from '../components/CoffeeLink.astro';
 interface Props {
   title?: string;
   description?: string;
-  active?: 'home' | 'certs' | 'blog';
+  active?: 'home' | 'certs' | 'blog' | 'konferencje';
 }
 
 const {
@@ -20,6 +20,7 @@ const nav = [
   { key: 'home', href: '/', label: 'Start' },
   { key: 'certs', href: '/certyfikaty/', label: 'Certyfikaty' },
   { key: 'blog', href: '/blog/', label: 'Blog' },
+  { key: 'konferencje', href: '/blog/konferencje/', label: 'Konferencje' },
 ];
 ---
 <!DOCTYPE html>

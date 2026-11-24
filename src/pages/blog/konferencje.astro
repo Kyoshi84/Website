@@ -1,6 +1,5 @@
 ---
 import Base from '../../layouts/Base.astro';
-import BlogFilters from '../../components/BlogFilters.astro';
 import dane from '../../data/konferencje.json';
 
 type Wydarzenie = (typeof dane.wydarzenia)[number];
@@ -51,13 +50,12 @@ const wszystkieRegiony = [...new Set(dane.wydarzenia.map((e) => e.region))].sort
 const ileWBranzy = (k: string) => nadchodzace.filter((e) => e.branza === k).length;
 const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 ---
-<Base title="Kalendarz konferencji: gaming, AI i technologie" active="blog" description="Nadchodzące konferencje i targi: iGaming, zakłady, kasyna i loterie oraz AI, data i nowe technologie — z datami, miejscem, terminami CFP i plikiem do kalendarza.">
+<Base title="Kalendarz konferencji: gaming, AI i technologie" active="konferencje" description="Nadchodzące konferencje i targi: iGaming, zakłady, kasyna i loterie oraz AI, data i nowe technologie — z datami, miejscem, terminami CFP i plikiem do kalendarza.">
   <section class="page-hero">
     <div class="wrap">
-      <span class="kicker">Blog · kalendarz</span>
+      <span class="kicker">Kalendarz konferencji</span>
       <h1>Kalendarz konferencji: gaming, AI i technologie</h1>
       <p>Jedno miejsce na wszystkie wydarzenia, które śledzę: targi iGaming i loterii oraz konferencje o AI, danych i nowych technologiach. Daty biorę ze stron organizatorów albo z otwartych baz i agregatorów — przy każdym wydarzeniu widać skąd. Przed rezerwacją lotu i tak kliknij w link organizatora.</p>
-      <BlogFilters current="konferencje" />
     </div>
   </section>
 

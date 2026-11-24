@@ -1,5 +1,5 @@
 ---
-interface Props { current: 'all' | 'raport-ai' | 'raport-gaming' | 'artykul' | 'konferencje' }
+interface Props { current: 'all' | 'raport-ai' | 'raport-gaming' | 'artykul' }
 const { current } = Astro.props;
 
 const items = [
@@ -7,7 +7,6 @@ const items = [
   { key: 'raport-ai', href: '/blog/raporty-ai/', label: 'Raporty AI' },
   { key: 'raport-gaming', href: '/blog/raporty-gaming/', label: 'Raporty Gaming' },
   { key: 'artykul', href: '/blog/artykuly/', label: 'Artykuły' },
-  { key: 'konferencje', href: '/blog/konferencje/', label: 'Kalendarz konferencji' },
 ];
 ---
 <nav class="filters" aria-label="Kategorie">

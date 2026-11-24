@@ -270,3 +270,10 @@ table.reg td.year{font-family:'IBM Plex Mono',monospace;color:var(--amber);text-
 .cal-method li{margin-bottom:4px;}
 .cal-method strong{color:var(--text-hi);}
 [hidden]{display:none !important;}
+
+/* ---------- menu na telefonach (4 zakładki) ---------- */
+@media (max-width:600px){
+  .nav-row{height:auto;flex-wrap:wrap;gap:8px;padding-top:10px;padding-bottom:10px;}
+  .tabs{width:100%;}
+  .tab-btn{flex:1;text-align:center;padding:8px 6px;font-size:0.84rem;}
+}
