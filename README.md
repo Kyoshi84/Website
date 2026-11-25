@@ -9,7 +9,7 @@ Każdy push na gałąź `master` automatycznie publikuje nową wersję.
 |---|---|
 | `src/pages/index.astro` | Strona główna (portfolio) |
 | `src/pages/certyfikaty.astro` | Rejestr certyfikatów i szkoleń |
-| `src/data/konferencje.json` | **Kalendarz konferencji** (strona `/blog/konferencje/`): gaming + AI/tech w jednym pliku, pole `branza` = `gaming` / `ai-tech`; zakończone znikają same. Filtry można linkować, np. `/blog/konferencje/?branza=ai-tech&polska=1` |
+| `src/data/konferencje.json` | **Kalendarz konferencji** (strony `/konferencje/`, `/konferencje/ai/`, `/konferencje/igaming/`, `/konferencje/polska/`, `/konferencje/2027/`): gaming + AI/tech w jednym pliku, pole `branza` = `gaming` / `ai-tech`; zakończone znikają same. Teksty i definicje podstron: `src/lib/konferencje.ts`. Filtry działają też z adresu, np. `/konferencje/?polska=1` |
 | `src/content/blog/` | **Wpisy bloga** w Markdown — tu dodajesz treści |
 | `src/styles/global.css` | Wygląd strony |
 | `public/` | Zdjęcie, favicon, obrazki do wpisów (`public/images/`) |
@@ -63,3 +63,17 @@ npm install
 npm run dev      # podgląd na http://localhost:4321
 npm run build    # gotowa strona w dist/
 ```
+
+## SEO i analityka
+
+- **Grafika do udostępniania** (Facebook, LinkedIn, komunikatory): `public/og-image.jpg`, 1200×630.
+- **Dane strukturalne (JSON-LD), meta tagi, okruszki, `robots.txt`, mapa strony**: generowane automatycznie w `src/layouts/Base.astro`, `src/pages/robots.txt.ts` i `astro.config.mjs`. Po zmianie domeny wystarczy poprawić `site` w `astro.config.mjs`.
+- **Weryfikacja wyszukiwarek i statystyki** — zmienne w Cloudflare Pages (Settings → Variables and secrets → Production), po dodaniu uruchom ponowny deploy:
+  - `PUBLIC_GSC_VERIFICATION` — wartość `content` z metatagu weryfikacyjnego Google Search Console,
+  - `PUBLIC_BING_VERIFICATION` — to samo z Bing Webmaster Tools,
+  - `PUBLIC_CF_ANALYTICS_TOKEN` — token z Cloudflare Web Analytics.
+
+  Po weryfikacji dodaj w obu narzędziach mapę strony: `https://www.unclekyoshi.is-not-a.dev/sitemap-index.xml`.
+- **Codzienny rebuild**: `.github/workflows/codzienny-rebuild.yml` wywołuje deploy hook Cloudflare (instrukcja na górze pliku), żeby zakończone wydarzenia znikały z kalendarza bez pushu.
+- **Przekierowania**: `public/_redirects` (stary adres kalendarza `/blog/konferencje/` → `/konferencje/`).
+- **Tytuły i opisy raportów**: wzór w szablonach `_szablon-raportu-*.md` (tytuł do ok. 60 znaków z hasłami tematycznymi, opis 140–155 znaków).

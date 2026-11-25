@@ -6,12 +6,17 @@ import { getPublishedPosts } from '../lib/posts';
 
 const latest = (await getPublishedPosts()).slice(0, 3);
 ---
-<Base active="home">
+<Base
+  active="home"
+  rawTitle="Jan Mejor — analityk biznesowy | analiza wymagań, procesy, AI"
+  description="Jan Mejor — analityk biznesowy z Warszawy: analiza wymagań, optymalizacja procesów, testy UAT i wdrożenia IT. Raporty z rynku AI i kalendarz konferencji."
+>
   <section class="hero">
     <div class="wrap hero-grid">
       <div>
-        <div class="kicker">ANALITYK BIZNESOWY · WARSZAWA</div>
-        <h1>Zamieniam złożone procesy biznesowe w rozwiązania, które działają.</h1>
+        <div class="kicker">WARSZAWA · ANALIZA WYMAGAŃ · PROCESY · AI</div>
+        <h1>Jan Mejor — analityk biznesowy</h1>
+        <p class="tagline">Zamieniam złożone procesy biznesowe w rozwiązania, które działają.</p>
         <p class="lede">Ponad sześć lat doświadczenia w analizie wymagań, optymalizacji procesów i wdrożeniach IT dla organizacji o wysokiej złożoności regulacyjnej. Łączę perspektywę biznesu z dokumentacją techniczną, prowadzę testy akceptacyjne i wspieram transformację cyfrową.</p>
         <div class="facts">
           <div><div class="num">6+</div><div class="lbl">LAT W ANALIZIE BIZNESOWEJ</div></div>
@@ -28,7 +33,7 @@ const latest = (await getPublishedPosts()).slice(0, 3);
       </div>
       <div class="photo-wrap">
         <div class="photo-frame">
-          <img src="/photo.jpg" alt="Jan Mejor">
+          <img src="/photo.jpg" alt="Jan Mejor, analityk biznesowy">
         </div>
       </div>
     </div>

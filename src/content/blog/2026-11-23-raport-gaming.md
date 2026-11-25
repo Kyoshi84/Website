@@ -5,7 +5,7 @@ date: 2026-11-23
 category: raport-gaming
 tags: [igaming, regulacje, podatki, loterie]
 draft: false
-linkedin: "Nowy Raport Gaming za 19–22 listopada: we Włoszech koalicja chce przenieść ciężar podatku z automatów na hazard online, w Bułgarii parlament zaostrza zakaz reklamy, a Bally's Intralot pokazuje 830 mln euro przychodów. W okresie było też mało wiadomości z Polski i o Brightstar. Zapraszam do lektury: https://jan-mejor.pages.dev/blog/2026-11-23-raport-gaming/"
+linkedin: "Nowy Raport Gaming za 19–22 listopada: we Włoszech koalicja chce przenieść ciężar podatku z automatów na hazard online, w Bułgarii parlament zaostrza zakaz reklamy, a Bally's Intralot pokazuje 830 mln euro przychodów. W okresie było też mało wiadomości z Polski i o Brightstar. Zapraszam do lektury: https://www.unclekyoshi.is-not-a.dev/blog/2026-11-23-raport-gaming/"
 ---
 
 > Uwaga metodologiczna: okres obejmuje 19–22 listopada 2026 (czwartek–niedziela). Wiele serwisów branżowych nie pokazuje dat publikacji, a część (np. PGRI, gry-hazardowe.com.pl) była niedostępna dla automatycznego odczytu. Uwzględniono tylko wiadomości z potwierdzoną datą; streszczenia opierają się na tytułach i widocznych zapowiedziach artykułów.

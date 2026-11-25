@@ -11,7 +11,15 @@ export async function getStaticPaths() {
 const { post } = Astro.props as { post: Post };
 const { Content } = await render(post);
 ---
-<Base title={post.data.title} description={post.data.description} active="blog">
+<Base
+  title={post.data.title}
+  description={post.data.description}
+  active="blog"
+  type="article"
+  publishedTime={post.data.date}
+  tags={post.data.tags}
+  section={CATEGORY_LABEL[post.data.category]}
+>
   <article>
     <header class="post-head">
       <div class="wrap">

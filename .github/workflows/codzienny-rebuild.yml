@@ -1,0 +1,27 @@
+# Codziennie wywołuje deploy hook Cloudflare Pages, żeby strona przebudowała się bez żadnego pushu:
+# zakończone wydarzenia znikają z kalendarza, a data ostatniej zmiany w mapie strony jest aktualna.
+#
+# Jednorazowa konfiguracja:
+#  1. Cloudflare → Workers & Pages → projekt → Settings → Builds → Deploy hooks → Add (gałąź master),
+#  2. GitHub → repozytorium → Settings → Secrets and variables → Actions → New repository secret:
+#     nazwa CLOUDFLARE_DEPLOY_HOOK, wartość = adres hooka z kroku 1.
+name: Codzienny rebuild
+
+on:
+  schedule:
+    - cron: '17 3 * * *' # 03:17 UTC, czyli 04:17 lub 05:17 w Polsce
+  workflow_dispatch: {}
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wywołaj deploy hook Cloudflare Pages
+        env:
+          DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "Brak sekretu CLOUDFLARE_DEPLOY_HOOK — zobacz komentarz na górze pliku."
+            exit 1
+          fi
+          curl --fail --silent --show-error --request POST "$DEPLOY_HOOK"

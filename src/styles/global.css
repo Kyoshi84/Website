@@ -277,3 +277,18 @@ table.reg td.year{font-family:'IBM Plex Mono',monospace;color:var(--amber);text-
   .tabs{width:100%;}
   .tab-btn{flex:1;text-align:center;padding:8px 6px;font-size:0.84rem;}
 }
+
+/* ---------- SEO: hasło pod H1, powiązane zestawienia, FAQ kalendarza ---------- */
+.hero .tagline{font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:500;line-height:1.35;color:var(--indigo-soft);max-width:36ch;margin-bottom:16px;}
+.cal-related{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:22px;}
+.cal-related .mono{font-size:0.74rem;color:var(--text-lo);margin-right:4px;}
+.cal-related a,.cal-related-now{font:500 0.82rem 'Inter',sans-serif;border:1px solid var(--line);border-radius:6px;padding:5px 11px;text-decoration:none;color:var(--text-lo);transition:border-color .2s,color .2s;}
+.cal-related a:hover{color:var(--text-hi);border-color:var(--indigo-soft);}
+.cal-related a:focus-visible{outline:2px solid var(--indigo-soft);outline-offset:2px;}
+.cal-related-now{border-color:var(--indigo);color:var(--text-hi);background:rgba(99,102,241,0.14);}
+.cal-faq{padding:44px 0 64px;}
+.cal-faq h2{font-size:1.35rem;margin-bottom:20px;}
+.cal-faq dl{display:grid;gap:18px;max-width:72ch;}
+.cal-faq dt{font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:1.02rem;}
+.cal-faq dd{color:var(--text-lo);margin-top:4px;}
+.cal-faq dd a{color:var(--indigo-soft);}

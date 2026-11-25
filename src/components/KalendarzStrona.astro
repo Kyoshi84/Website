@@ -1,0 +1,96 @@
+---
+import Base from '../layouts/Base.astro';
+import Kalendarz from './Kalendarz.astro';
+import { KOLEJNOSC, STRONY, aktualizacja, hrefStrony, nadchodzace, odmianaWydarzen, zakres } from '../lib/konferencje';
+
+interface Props {
+  /** Klucz strony z STRONY w lib/konferencje.ts ('index', 'ai', 'igaming', 'polska', '2027'). */
+  klucz: string;
+}
+
+const { klucz } = Astro.props;
+const strona = STRONY[klucz];
+const lista = nadchodzace(strona.filtr);
+const najblizsze = lista[0];
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const origin = new URL('/', Astro.site).href;
+
+// Odpowiedzi liczone przy każdym budowaniu strony, więc zawsze zgadzają się z listą.
+const faq: { q: string; a: string }[] = [];
+if (najblizsze) {
+  faq.push({
+    q: 'Jakie jest najbliższe wydarzenie na liście?',
+    a: `${najblizsze.nazwa}, ${zakres(najblizsze.od, najblizsze.do)}${najblizsze.miasto ? `, ${najblizsze.miasto}` : ''}${najblizsze.kraj ? ` (${najblizsze.kraj})` : ''}.`,
+  });
+}
+faq.push(
+  {
+    q: 'Ile wydarzeń jest teraz na liście?',
+    a: `${lista.length} ${odmianaWydarzen(lista.length)}. Zakończone znikają same, a nowe dopisuję na bieżąco.`,
+  },
+  {
+    q: 'Skąd pochodzą daty?',
+    a: 'Ze stron organizatorów, a tam, gdzie ich nie ma, z otwartych baz i agregatorów. Oznaczenie „potwierdzone u organizatora” znaczy, że datę sprawdziłem na stronie wydarzenia. „Wg agregatora” znaczy, że warto ją sprawdzić przed rezerwacją.',
+  },
+  {
+    q: 'Jak dodać wydarzenia do swojego kalendarza?',
+    a: 'Przy każdym wydarzeniu kliknij „+ do kalendarza”. Przyciskiem nad listą pobierzesz wszystkie widoczne wydarzenia jako jeden plik .ics, który otworzysz w Google Calendar, Outlooku i Kalendarzu Apple.',
+  },
+  {
+    q: 'Co znaczy CFP?',
+    a: 'Call for papers, czyli nabór zgłoszeń od prelegentów. Przy wydarzeniach z otwartym naborem widać termin i link do zgłoszenia.',
+  },
+  {
+    q: 'Brakuje wydarzenia albo data się nie zgadza. Co zrobić?',
+    a: '',
+  },
+);
+
+const jsonLd = [
+  {
+    '@type': 'CollectionPage',
+    '@id': `${canonical}#strona`,
+    url: canonical,
+    name: strona.h1,
+    description: strona.description,
+    inLanguage: 'pl-PL',
+    dateModified: aktualizacja,
+    isPartOf: { '@id': `${origin}#website` },
+  },
+];
+---
+<Base title={strona.title} description={strona.description} active="konferencje" jsonLd={jsonLd}>
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="kicker">Kalendarz konferencji</span>
+      <h1>{strona.h1}</h1>
+      <div class="intro">
+        {strona.wstep.map((p) => <p>{p}</p>)}
+      </div>
+      <nav class="cal-related" aria-label="Inne zestawienia konferencji">
+        <span class="mono">Zobacz też:</span>
+        {KOLEJNOSC.map((k) => (
+          k === klucz
+            ? <span class="cal-related-now" aria-current="page">{STRONY[k].etykieta}</span>
+            : <a href={hrefStrony(k)}>{STRONY[k].etykieta}</a>
+        ))}
+      </nav>
+    </div>
+  </section>
+
+  <Kalendarz wydarzenia={lista} />
+
+  <section class="cal-faq">
+    <div class="wrap">
+      <h2>Najczęstsze pytania</h2>
+      <dl>
+        {faq.map((f) => (
+          <div class="cal-faq-item">
+            <dt>{f.q}</dt>
+            <dd>{f.a ? f.a : <>Napisz do mnie na <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a>, poprawię.</>}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </section>
+</Base>

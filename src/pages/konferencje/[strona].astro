@@ -1,0 +1,11 @@
+---
+import KalendarzStrona from '../../components/KalendarzStrona.astro';
+import { KOLEJNOSC, STRONY } from '../../lib/konferencje';
+
+export function getStaticPaths() {
+  return KOLEJNOSC.filter((k) => k !== 'index').map((k) => ({ params: { strona: STRONY[k].slug }, props: { klucz: k } }));
+}
+
+const { klucz } = Astro.props;
+---
+<KalendarzStrona klucz={klucz} />

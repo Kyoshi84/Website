@@ -1,11 +1,12 @@
 ---
-import Base from '../../layouts/Base.astro';
-import dane from '../../data/konferencje.json';
+import { MIESIACE, aktualizacja, dzienMies, odmianaWydarzen, zakres, type Wydarzenie } from '../lib/konferencje';
 
-type Wydarzenie = (typeof dane.wydarzenia)[number];
+interface Props {
+  /** Nadchodzące wydarzenia do pokazania na tej stronie (już przefiltrowane). */
+  wydarzenia: Wydarzenie[];
+}
 
-const MIESIACE = ['styczeń','luty','marzec','kwiecień','maj','czerwiec','lipiec','sierpień','wrzesień','październik','listopad','grudzień'];
-const MIES_DOP = ['stycznia','lutego','marca','kwietnia','maja','czerwca','lipca','sierpnia','września','października','listopada','grudnia'];
+const nadchodzace = Astro.props.wydarzenia;
 
 const BRANZE = [
   { klucz: 'gaming', etykieta: 'Gaming i loterie', klasa: 'gaming' },
@@ -13,24 +14,6 @@ const BRANZE = [
 ] as const;
 const etykietaBranzy = (k: string) => BRANZE.find((b) => b.klucz === k)?.etykieta ?? k;
 const klasaBranzy = (k: string) => BRANZE.find((b) => b.klucz === k)?.klasa ?? '';
-
-function zakres(od: string, doDnia: string): string {
-  const [ry, rm, rd] = od.split('-').map(Number);
-  const [ky, km, kd] = doDnia.split('-').map(Number);
-  if (od === doDnia) return `${rd} ${MIES_DOP[rm - 1]}`;
-  if (rm === km && ry === ky) return `${rd}–${kd} ${MIES_DOP[rm - 1]}`;
-  return `${rd} ${MIES_DOP[rm - 1]} – ${kd} ${MIES_DOP[km - 1]}`;
-}
-function dzienMies(iso: string): string {
-  const [, m, d] = iso.split('-').map(Number);
-  return `${d} ${MIES_DOP[m - 1]}`;
-}
-
-// Na etapie budowania odrzucamy wydarzenia zakończone; skrypt w przeglądarce robi to samo codziennie.
-const dzis = new Date().toISOString().slice(0, 10);
-const nadchodzace = dane.wydarzenia
-  .filter((e) => e.do >= dzis)
-  .sort((a, b) => a.od.localeCompare(b.od) || a.nazwa.localeCompare(b.nazwa));
 
 const grupy = new Map<string, Wydarzenie[]>();
 for (const e of nadchodzace) {
@@ -41,27 +24,23 @@ for (const e of nadchodzace) {
 
 // Tematy: zapamiętujemy, w których branżach występują, żeby chować nieistotne chipy.
 const tematy = new Map<string, Set<string>>();
-for (const e of dane.wydarzenia) for (const t of e.tagi) {
+for (const e of nadchodzace) for (const t of e.tagi) {
   if (!tematy.has(t)) tematy.set(t, new Set());
   tematy.get(t)!.add(e.branza);
 }
 const listaTematow = [...tematy.entries()].sort((a, b) => a[0].localeCompare(b[0], 'pl'));
-const wszystkieRegiony = [...new Set(dane.wydarzenia.map((e) => e.region))].sort((a, b) => a.localeCompare(b, 'pl'));
+const wszystkieRegiony = [...new Set(nadchodzace.map((e) => e.region))].sort((a, b) => a.localeCompare(b, 'pl'));
 const ileWBranzy = (k: string) => nadchodzace.filter((e) => e.branza === k).length;
+const branzeWZestawieniu = BRANZE.filter((b) => ileWBranzy(b.klucz) > 0);
+const maPolskie = nadchodzace.some((e) => e.kraj === 'Polska');
+const wszystkoPolskie = nadchodzace.length > 0 && nadchodzace.every((e) => e.kraj === 'Polska');
+const maCfp = nadchodzace.some((e) => !!e.cfp);
 const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 ---
-<Base title="Kalendarz konferencji: gaming, AI i technologie" active="konferencje" description="Nadchodzące konferencje i targi: iGaming, zakłady, kasyna i loterie oraz AI, data i nowe technologie — z datami, miejscem, terminami CFP i plikiem do kalendarza.">
-  <section class="page-hero">
-    <div class="wrap">
-      <span class="kicker">Kalendarz konferencji</span>
-      <h1>Kalendarz konferencji: gaming, AI i technologie</h1>
-      <p>Jedno miejsce na wszystkie wydarzenia, które śledzę: targi iGaming i loterii oraz konferencje o AI, danych i nowych technologiach. Daty biorę ze stron organizatorów albo z otwartych baz i agregatorów — przy każdym wydarzeniu widać skąd. Przed rezerwacją lotu i tak kliknij w link organizatora.</p>
-    </div>
-  </section>
-
-  <section class="cal-section">
+<section class="cal-section">
     <div class="wrap">
       <div class="cal-tools" id="cal-tools">
+        {branzeWZestawieniu.length > 1 && (
         <div class="cal-row">
           <span class="cal-label mono">Branża</span>
           <div class="chips" data-grupa="branza">
@@ -69,6 +48,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
             {BRANZE.map((b) => <button type="button" class="chip" aria-pressed="false" data-wartosc={b.klucz}>{b.etykieta} <span class="chip-n">{ileWBranzy(b.klucz)}</span></button>)}
           </div>
         </div>
+        )}
         <div class="cal-row">
           <span class="cal-label mono">Temat</span>
           <div class="chips" data-grupa="tag">
@@ -76,6 +56,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
             {listaTematow.map(([t, br]) => <button type="button" class="chip" aria-pressed="false" data-wartosc={t} data-branze={[...br].join('|')}>{t}</button>)}
           </div>
         </div>
+        {wszystkieRegiony.length > 1 && (
         <div class="cal-row">
           <span class="cal-label mono">Region</span>
           <div class="chips" data-grupa="region">
@@ -83,12 +64,13 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
             {wszystkieRegiony.map((r) => <button type="button" class="chip" aria-pressed="false" data-wartosc={r}>{r}</button>)}
           </div>
         </div>
+        )}
         <div class="cal-row">
           <span class="cal-label mono">Tylko</span>
           <div class="chips">
-            <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="polska">W Polsce</button>
+            {maPolskie && !wszystkoPolskie && <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="polska">W Polsce</button>}
             <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="potwierdzone">Potwierdzone u organizatora</button>
-            <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="cfp">Otwarty nabór prelegentów (CFP)</button>
+            {maCfp && <button type="button" class="chip toggle" aria-pressed="false" data-przelacznik="cfp">Otwarty nabór prelegentów (CFP)</button>}
           </div>
         </div>
         <div class="cal-row cal-row-end">
@@ -99,7 +81,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
           <button type="button" class="cta ghost cal-ics-all" id="cal-ics-all">Pobierz widoczne do kalendarza (.ics)</button>
         </div>
         <div class="cal-row cal-row-end">
-          <p class="cal-count mono" id="cal-count" aria-live="polite">{nadchodzace.length} wydarzeń</p>
+          <p class="cal-count mono" id="cal-count" aria-live="polite">{nadchodzace.length} {odmianaWydarzen(nadchodzace.length)}</p>
           <button type="button" class="cal-reset" id="cal-reset" hidden>Wyczyść filtry</button>
         </div>
       </div>
@@ -166,7 +148,7 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
           <li><strong>Gaming i loterie:</strong> strony organizatorów (SiGMA Group, SBC, Eventus International) oraz agregator <a href="https://www.casinocitypress.com/tradeshows/" target="_blank" rel="noopener">Casino City Press</a> z serwisem <a href="https://www.gamingmeets.com/" target="_blank" rel="noopener">GamingMeets</a>.</li>
           <li><strong>AI i technologie:</strong> otwarta baza <a href="https://confs.tech/" target="_blank" rel="noopener">confs.tech</a> (tam też terminy CFP), konferencje naukowe z <a href="https://github.com/ccfddl/ccf-deadlines" target="_blank" rel="noopener">ccf-deadlines</a> (źródło danych <a href="https://huggingface.co/spaces/huggingface/ai-deadlines" target="_blank" rel="noopener">AI Deadlines</a>), przegląd dat sprawdzonych u organizatorów przez <a href="https://uvik.net/blog/ai-conferences/" target="_blank" rel="noopener">Uvik Software</a> oraz polskie wydarzenia z <a href="https://crossweb.pl/wydarzenia/" target="_blank" rel="noopener">Crossweb</a>.</li>
         </ul>
-        <p>Gdy daty się różnią, wpisuję wersję organizatora i dodaję notkę. Ostatnia aktualizacja listy: {dane.aktualizacja}.</p>
+        <p>Gdy daty się różnią, wpisuję wersję organizatora i dodaję notkę. Ostatnia aktualizacja listy: {aktualizacja}.</p>
         <p>Brakuje wydarzenia albo coś się nie zgadza? <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">Napisz do mnie na LinkedIn</a>.</p>
       </div>
     </div>
@@ -327,4 +309,3 @@ const host = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 
     filtruj();
   </script>
-</Base>

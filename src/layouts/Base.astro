@@ -6,21 +6,161 @@ interface Props {
   title?: string;
   description?: string;
   active?: 'home' | 'certs' | 'blog' | 'konferencje';
+  /** Dokładny tytuł <title> (bez dopisku „— Jan Mejor”), np. dla strony głównej. */
+  rawTitle?: string;
+  type?: 'website' | 'article';
+  /** Tylko dla wpisów (type="article"). */
+  publishedTime?: Date;
+  tags?: string[];
+  section?: string;
+  /** Własna grafika do podglądu w mediach społecznościowych (ścieżka lub pełny URL). */
+  image?: string;
+  imageAlt?: string;
+  noindex?: boolean;
+  /** Dodatkowe węzły JSON-LD dla tej strony (bez @context). */
+  jsonLd?: Record<string, unknown>[];
+  /** Etykieta ostatniego elementu okruszków, gdy nie wynika ze ścieżki. */
+  crumbLabel?: string;
 }
+
+const SITE_NAME = 'Jan Mejor';
+const SUFFIX = ' — Jan Mejor';
+const LINKEDIN = 'https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/';
+const GITHUB = 'https://github.com/Kyoshi84';
+const DEFAULT_DESCRIPTION =
+  'Jan Mejor — analityk biznesowy z Warszawy: analiza wymagań, optymalizacja procesów, testy UAT i wdrożenia IT. Raporty z rynku AI i kalendarz konferencji.';
 
 const {
   title,
-  description = 'Jan Mejor — analityk biznesowy. Analiza wymagań, optymalizacja procesów, wdrożenia IT oraz raporty z rynku AI.',
+  description = DEFAULT_DESCRIPTION,
   active,
+  rawTitle,
+  type = 'website',
+  publishedTime,
+  tags = [],
+  section,
+  image = '/og-image.jpg',
+  imageAlt,
+  noindex = false,
+  jsonLd = [],
+  crumbLabel,
 } = Astro.props;
 
-const fullTitle = title ? `${title} — Jan Mejor` : 'Jan Mejor — Analityk Biznesowy';
-const canonical = new URL(Astro.url.pathname, Astro.site);
+// Tytuł zakładki: dopisek tylko, jeśli całość mieści się w ok. 65 znakach (dłuższe Google i tak ucina).
+const fullTitle =
+  rawTitle ?? (title ? (title.length + SUFFIX.length <= 65 ? `${title}${SUFFIX}` : title) : 'Jan Mejor — analityk biznesowy');
+
+const origin = new URL('/', Astro.site).href; // z ukośnikiem na końcu
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const imageUrl = new URL(image, Astro.site).href;
+const usesDefaultImage = image === '/og-image.jpg';
+const imageAltText = imageAlt ?? (usesDefaultImage ? 'Jan Mejor — analityk biznesowy' : fullTitle);
+
+// ---- Dane strukturalne (JSON-LD) ----
+const personId = `${origin}#jan-mejor`;
+const websiteId = `${origin}#website`;
+
+const person = {
+  '@type': 'Person',
+  '@id': personId,
+  name: 'Jan Mejor',
+  alternateName: 'Jan Dionizy Mejor',
+  url: origin,
+  image: new URL('/photo.jpg', Astro.site).href,
+  jobTitle: 'Analityk biznesowy',
+  description: 'Analityk biznesowy z Warszawy: analiza wymagań, optymalizacja procesów, testy akceptacyjne i wdrożenia IT.',
+  sameAs: [LINKEDIN, GITHUB],
+  alumniOf: { '@type': 'CollegeOrUniversity', name: 'Uniwersytet Warszawski' },
+  knowsAbout: [
+    'Analiza biznesowa',
+    'Analiza wymagań',
+    'Optymalizacja procesów',
+    'Testy akceptacyjne UAT',
+    'BPMN',
+    'UML',
+    'Power Platform',
+    'PRINCE2',
+    'Sztuczna inteligencja',
+  ],
+  knowsLanguage: ['pl', 'en', 'fr'],
+};
+
+const website = {
+  '@type': 'WebSite',
+  '@id': websiteId,
+  url: origin,
+  name: SITE_NAME,
+  inLanguage: 'pl-PL',
+  publisher: { '@id': personId },
+};
+
+// Okruszki wyprowadzone ze ścieżki adresu.
+const LABELS: Record<string, string> = {
+  blog: 'Blog',
+  certyfikaty: 'Certyfikaty i szkolenia',
+  konferencje: 'Konferencje',
+  'raporty-ai': 'Raporty AI',
+  'raporty-gaming': 'Raporty Gaming',
+  artykuly: 'Artykuły',
+  ai: 'AI i technologie',
+  igaming: 'iGaming i loterie',
+  polska: 'W Polsce',
+  '2027': '2027',
+};
+const segments = Astro.url.pathname.split('/').filter(Boolean);
+const crumbs = segments.map((seg, i) => ({
+  name: LABELS[seg] ?? (i === segments.length - 1 ? (crumbLabel ?? title ?? seg) : seg),
+  href: `/${segments.slice(0, i + 1).join('/')}/`,
+}));
+const breadcrumbList =
+  crumbs.length > 0
+    ? {
+        '@type': 'BreadcrumbList',
+        itemListElement: [{ name: 'Start', href: '/' }, ...crumbs].map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: c.name,
+          item: new URL(c.href, Astro.site).href,
+        })),
+      }
+    : null;
+
+const posting =
+  type === 'article' && publishedTime
+    ? {
+        '@type': 'BlogPosting',
+        '@id': `${canonical}#wpis`,
+        url: canonical,
+        headline: title ?? fullTitle,
+        description,
+        datePublished: publishedTime.toISOString(),
+        inLanguage: 'pl-PL',
+        image: [imageUrl],
+        author: { '@id': personId },
+        publisher: { '@id': personId },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': canonical },
+        ...(tags.length ? { keywords: tags.join(', ') } : {}),
+        ...(section ? { articleSection: section } : {}),
+      }
+    : null;
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [person, website, ...(breadcrumbList ? [breadcrumbList] : []), ...(posting ? [posting] : []), ...jsonLd],
+};
+// Zamiana „<” chroni przed przedwczesnym zamknięciem znacznika <script>.
+const graphJson = JSON.stringify(graph).replace(/</g, '\\u003c');
+
+// ---- Weryfikacja wyszukiwarek i analityka: wartości ustawiasz w Cloudflare Pages (Settings → Variables) ----
+const gscVerification = import.meta.env.PUBLIC_GSC_VERIFICATION;
+const bingVerification = import.meta.env.PUBLIC_BING_VERIFICATION;
+const cfAnalyticsToken = import.meta.env.PUBLIC_CF_ANALYTICS_TOKEN;
+
 const nav = [
   { key: 'home', href: '/', label: 'Start' },
   { key: 'certs', href: '/certyfikaty/', label: 'Certyfikaty' },
   { key: 'blog', href: '/blog/', label: 'Blog' },
-  { key: 'konferencje', href: '/blog/konferencje/', label: 'Konferencje' },
+  { key: 'konferencje', href: '/konferencje/', label: 'Konferencje' },
 ];
 ---
 <!DOCTYPE html>
@@ -30,14 +170,32 @@ const nav = [
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{fullTitle}</title>
   <meta name="description" content={description}>
+  <meta name="robots" content={noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large'}>
   <link rel="canonical" href={canonical}>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="sitemap" type="application/xml" href="/sitemap-index.xml">
   <link rel="alternate" type="application/rss+xml" title="Jan Mejor — Blog" href="/rss.xml">
-  <meta property="og:type" content="website">
+  {gscVerification && <meta name="google-site-verification" content={gscVerification}>}
+  {bingVerification && <meta name="msvalidate.01" content={bingVerification}>}
+
+  <meta property="og:type" content={type}>
+  <meta property="og:locale" content="pl_PL">
+  <meta property="og:site_name" content={SITE_NAME}>
   <meta property="og:title" content={fullTitle}>
   <meta property="og:description" content={description}>
   <meta property="og:url" content={canonical}>
-  <meta property="og:image" content={new URL('/photo.jpg', Astro.site)}>
+  <meta property="og:image" content={imageUrl}>
+  <meta property="og:image:alt" content={imageAltText}>
+  {usesDefaultImage && <meta property="og:image:width" content="1200">}
+  {usesDefaultImage && <meta property="og:image:height" content="630">}
+  <meta name="twitter:card" content="summary_large_image">
+  {type === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime.toISOString()}>}
+  {type === 'article' && <meta property="article:author" content={origin}>}
+  {type === 'article' && section && <meta property="article:section" content={section}>}
+  {type === 'article' && tags.map((t) => <meta property="article:tag" content={t}>)}
+
+  <script type="application/ld+json" set:html={graphJson}></script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -61,8 +219,10 @@ const nav = [
   <div class="site-foot">
     <div class="wrap">
       <span>© {new Date().getFullYear()} Jan Dionizy Mejor</span>
-      <span><a href="/rss.xml">RSS</a> · <a href="https://www.linkedin.com/in/jan-dionizy-mejor-0b6a1529/" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/Kyoshi84" target="_blank" rel="noopener">GitHub</a> <CoffeeLink size="sm" /></span>
+      <span><a href="/rss.xml">RSS</a> · <a href={LINKEDIN} target="_blank" rel="noopener">LinkedIn</a> · <a href={GITHUB} target="_blank" rel="noopener">GitHub</a> <CoffeeLink size="sm" /></span>
     </div>
   </div>
+
+  {cfAnalyticsToken && <script is:inline defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon={JSON.stringify({ token: cfAnalyticsToken })}></script>}
 </body>
 </html>

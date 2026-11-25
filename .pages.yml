@@ -18,10 +18,12 @@ content:
     fields:
       - name: title
         label: Tytuł
+        description: "Raporty: „Raport AI: daty — 3 hasła tematyczne”, do ok. 60 znaków. Artykuły: główne słowo kluczowe na początku."
         type: string
         required: true
       - name: description
         label: Opis (lead, 1–2 zdania)
+        description: "140–155 znaków, z nazwami własnymi (firmy, modele, kraje), które ktoś wpisze w wyszukiwarkę."
         type: text
         required: true
       - name: date
